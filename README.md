@@ -2,6 +2,47 @@
 
 Estensione che ricorda cosa guardi e ti dice cosa guardare stasera.
 
+---
+
+## ⬇︎ Scarica e installa
+
+**[Scarica fosforo-2.6.0.zip](https://github.com/MasterCod24/fosforo/raw/main/dist/fosforo-2.6.0.zip)** — 202 KB, è l'unico file che ti serve.
+
+### Chrome, Edge, Arc, Brave
+
+1. Scarica lo zip col link qui sopra e **scompattalo** (doppio clic). Viene fuori una
+   cartella che si chiama `fosforo`.
+2. Apri `chrome://extensions` e accendi **Modalità sviluppatore**, in alto a destra.
+3. Clic su **Carica estensione non pacchettizzata**.
+4. Scegli la cartella **`fosforo`** — quella che contiene `manifest.json`.
+
+> ⚠️ Il passo 4 è quello che frega tutti: Chrome vuole **la cartella**, non lo zip e non
+> un file dentro la cartella. Se hai saltato lo scompattamento, torna al passo 1.
+
+Fatto: il cerchio bianco compare nella barra degli strumenti. Cliccalo e si apre la
+dashboard.
+
+### Safari (macOS)
+
+Safari non carica cartelle: va prima convertita in un'app, e serve Xcode.
+
+```bash
+unzip fosforo-2.6.0.zip
+xcrun safari-web-extension-converter fosforo --project-location ~/fosforo-safari
+```
+
+Apri il progetto che ti crea, premi Esegui, poi Safari → Impostazioni → Estensioni →
+abilita Fosforo. (Per tenerla installata stabilmente serve un ID sviluppatore Apple;
+per provarla no.)
+
+### Appena installata
+
+Apri la dashboard → **Impostazioni** e incolla la tua **chiave di Claude** (`sk-ant-…`):
+è quella che fa scrivere i consigli. Senza, Fosforo funziona lo stesso in modalità
+demo — registra quel che guardi e lo ordina da solo, e te lo dice in chiaro.
+
+---
+
 Riconosce film e serie sulle pagine video che apri, li tiene in una libreria che
 resta sul tuo computer, e da quella libreria fa scrivere a **Claude** le sei proposte
 della sera, con un punteggio di affinità e il motivo — che cita i titoli che hai
@@ -10,21 +51,6 @@ amato davvero.
 L'interfaccia è la direzione **SALA**: la locandina è la superficie, l'interfaccia è
 vetro che ci galleggia sopra. Grafite `#0E1012`, Helvetica bianca, forme a pillola,
 zero cromature e zero ciano. Gli artboard da cui nasce sono in [`design/`](design/).
-
-## Installare
-
-**Chrome / Edge / Arc** — `chrome://extensions` → *Modalità sviluppatore* → *Carica
-estensione non pacchettizzata* → scegli la cartella `extension/`. Non c'è niente da
-compilare: l'SDK è già impacchettato in `extension/vendor/`.
-
-**Safari (macOS)** — `extension/` è una cartella MV3 pura, quindi:
-
-```bash
-xcrun safari-web-extension-converter extension --project-location ../fosforo-safari
-```
-
-poi apri il progetto Xcode, esegui, e abilita Fosforo in Safari → Impostazioni →
-Estensioni. (Per usarla stabilmente serve un ID sviluppatore Apple; per provarla no.)
 
 ## Le due chiavi
 
@@ -82,14 +108,20 @@ npm test        # logica: titoli, locandine, chiamata a Claude (rete finta)
 npm run e2e     # carica l'estensione vera in Chromium su una pagina video finta
 npm run icons   # rigenera le icone dal marchio
 npm run shots   # fotografa le cinque superfici a 1160px
+npm run pack    # rifà dist/fosforo-2.6.0.zip, il pacchetto da scaricare
 ```
+
+Dopo ogni modifica a `extension/` va rifatto il pacchetto con `npm run pack`, se no
+quel che si scarica dal link in cima non è quel che c'è nel repo.
 
 ## Cosa è stato provato, e cosa no
 
 Provato davvero, offline: l'estensione caricata in Chromium riconosce il titolo dal
 JSON-LD di una pagina video, monta l'overlay, «È giusto» mette il titolo in libreria
 **con la locandina presa dalla pagina**, i conteggi si aggiornano, e tutto è ancora lì
-dopo un riavvio del browser (`npm run e2e`, 11 passi). La chiamata a Claude è
+dopo un riavvio del browser (`npm run e2e`, 11 passi). Gli stessi 11 passi sono stati
+rifatti **sulla cartella scompattata dallo zip** qui sopra, non sui sorgenti: quel che
+scarichi è esattamente quel che è stato provato. La chiamata a Claude è
 verificata nella forma — modello, schema della risposta, intestazioni, compresa
 `anthropic-dangerous-direct-browser-access` — con la rete finta (`npm test`, 19 test).
 

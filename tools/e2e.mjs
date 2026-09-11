@@ -8,7 +8,9 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
-const EXT = resolve("extension");
+/* Di norma prova i sorgenti; con un argomento prova un'altra cartella —
+   serve a verificare che il pacchetto scaricabile sia identico. */
+const EXT = resolve(process.argv[2] || "extension");
 const PORTA = 8791;
 
 /* Una pagina che si dichiara come farebbe un sito vero: JSON-LD, og:image, un <video>. */
@@ -59,7 +61,7 @@ try {
   /* 1. Il service worker si sveglia da solo */
   let sw = context.serviceWorkers()[0] || await context.waitForEvent("serviceworker", { timeout: 15000 });
   const id = new URL(sw.url()).host;
-  ok("il service worker parte", Boolean(id), "estensione " + id.slice(0, 12) + "…");
+  ok("il service worker parte", Boolean(id), "da " + EXT.replace(process.cwd() + "/", ""));
 
   /* 2. La pagina video viene riconosciuta e l'overlay si monta */
   const pagina = await context.newPage();
