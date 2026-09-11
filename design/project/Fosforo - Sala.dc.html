@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<style>
+@font-face { font-family: "WNMono"; src: url("assets/fonts/JetBrainsMono-var.woff2") format("woff2"); font-weight: 400 700; font-display: swap; }
+body { margin: 0; background: #16181a; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+a { color: #e8eaec; text-decoration: none; }
+a:hover { color: #fff; }
+.sv-turn { padding: 44px 48px 40px; border-bottom: 1px solid rgba(255,255,255,.08); }
+.sv-thd { display: flex; align-items: baseline; gap: 10px; margin: 0 0 10px; }
+.sv-tid { font: 600 10px "WNMono", ui-monospace, Menlo, monospace; padding: 3px 7px; background: #f2f4f6; color: #16181a; border-radius: 4px; }
+.sv-tname { font: 500 13px/1.2 "Helvetica Neue", Helvetica, Arial, sans-serif; color: rgba(255,255,255,.72); }
+.sv-sub { margin: 0 0 26px; max-width: 900px; font: 400 12.5px/1.6 "Helvetica Neue", Helvetica, Arial, sans-serif; color: rgba(255,255,255,.45); }
+.sv-opts { display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start; }
+.sv-opt { flex: none; display: flex; flex-direction: column; gap: 11px; scroll-margin-top: 16px; }
+.sv-oid { font: 600 10.5px "WNMono", ui-monospace, Menlo, monospace; padding: 3px 7px; background: rgba(255,255,255,.12); color: #f2f4f6; border-radius: 5px; }
+.sv-olabel { display: flex; align-items: baseline; gap: 9px; max-width: 1160px; font: 400 11.5px/1.45 "Helvetica Neue", Helvetica, Arial, sans-serif; color: rgba(255,255,255,.5); }
+.sv-olabel b { font-weight: 500; color: rgba(255,255,255,.88); }
+.sv-card { max-width: 100%; overflow: hidden; border-radius: 14px; box-shadow: 0 24px 70px -30px rgba(0,0,0,.9); }
+.sv-opt:target .sv-oid { background: #f2f4f6; color: #16181a; }
+.sv-next { margin: 28px 0 0; font: 12px/1.6 "Helvetica Neue", Helvetica, Arial, sans-serif; color: rgba(255,255,255,.42); }
+@keyframes fz-rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes fz-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fz-bar { from { transform: scaleX(0); } }
+@keyframes fz-breathe { 0%,100% { opacity: .35; } 50% { opacity: 1; } }
+@keyframes fz-slidein { from { opacity: 0; transform: translateX(28px); } to { opacity: 1; transform: none; } }
+@keyframes fz-up { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
+@keyframes fz-orbit { to { transform: rotate(360deg); } }
+</style>
+<script src="./image-slot.js"></script>
+</helmet>
+
+<section class="sv-turn" id="t2">
+  <div class="sv-thd"><a class="sv-tid" href="#t2">2</a><span class="sv-tname">SALA — la direzione, portata su tutte le superfici</span></div>
+  <p class="sv-sub">Un solo linguaggio: grafite #0E1012, un unico grigio-vetro che sfoca il fondo, tipografia Helvetica bianca, forme a pillola, zero cromature e zero ciano. La regola che tiene tutto insieme: <b style="color: rgba(255,255,255,.8); font-weight: 500;">l'immagine è la superficie, l'interfaccia è vetro che ci galleggia sopra</b>.</p>
+
+  <div class="sv-opts">
+
+    <div class="sv-opt" id="2a">
+      <div class="sv-olabel"><a class="sv-oid" href="#2a">2a</a><span><b>STASERA.</b> La schermata d'ingresso. Un titolo alla volta, locandina a tutta altezza, scheda di vetro a sinistra, le altre cinque proposte come nastro in basso. L'indicatore a destra dice dove sei nelle sei proposte.</span></div>
+      <div class="sv-card" style="width: 1160px;">
+        <div style="position: relative; width: 1160px; height: 725px; overflow: hidden; background: #0e1012; color: #f2f4f6; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+          <div style="position: absolute; inset: 0; background: radial-gradient(120% 90% at 78% 15%, #23272b, #0e1012 62%);"></div>
+          <div style="position: absolute; right: 0; top: 0; bottom: 0; width: 700px; animation: fz-fade 900ms ease both;">
+            <image-slot id="sala-poster-2a" shape="rect" fit="cover" placeholder="Locandina del film — trascina qui (2:3)"></image-slot>
+          </div>
+          <div style="position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, #0e1012 0%, #0e1012 27%, rgba(14,16,18,.94) 41%, rgba(14,16,18,.55) 58%, rgba(14,16,18,.12) 78%, rgba(14,16,18,0) 100%);"></div>
+          <div style="position: absolute; inset: 0; pointer-events: none; background: linear-gradient(0deg, rgba(14,16,18,.92), rgba(14,16,18,.1) 26%, transparent 46%);"></div>
+          <div style="position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, rgba(14,16,18,.72), transparent 22%);"></div>
+
+          <header style="position: absolute; left: 0; right: 0; top: 0; z-index: 5; display: flex; align-items: center; gap: 32px; padding: 26px 40px;">
+            <div style="display: flex; align-items: center; gap: 11px; flex: none;">
+              <span style="position: relative; width: 17px; height: 17px; display: block;" aria-hidden="true">
+                <span style="position: absolute; inset: 0; border-radius: 50%; background: #f2f4f6;"></span>
+                <span style="position: absolute; inset: 5px; border-radius: 50%; background: #0e1012;"></span>
+              </span>
+              <span style="font-size: 14px; font-weight: 500; letter-spacing: .34em; color: #f2f4f6;">FOSFORO</span>
+            </div>
+            <nav style="display: flex; align-items: center; gap: 26px; flex: none;">
+              <a href="#2a" style="font-size: 12px; font-weight: 500; color: #f2f4f6;">Stasera</a>
+              <a href="#2b" style="font-size: 12px; font-weight: 400; color: rgba(242,244,246,.42);" style-hover="color: #f2f4f6;">Libreria</a>
+              <a href="#2a" style="font-size: 12px; font-weight: 400; color: rgba(242,244,246,.42);" style-hover="color: #f2f4f6;">Diario</a>
+              <a href="#2c" style="font-size: 12px; font-weight: 400; color: rgba(242,244,246,.42);" style-hover="color: #f2f4f6;">Impostazioni</a>
+            </nav>
+            <div style="margin-left: auto; display: flex; align-items: center; gap: 12px; flex: none;">
+              <span style="display: flex; align-items: center; gap: 7px; padding: 7px 12px; border-radius: 100px; border: 1px solid rgba(255,255,255,.18); background: linear-gradient(150deg, rgba(255,255,255,.15), rgba(255,255,255,.05) 48%, rgba(255,255,255,.09)); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%); box-shadow: inset 0 1px 0 rgba(255,255,255,.32), inset 0 -1px 0 rgba(0,0,0,.22), 0 4px 14px -6px rgba(0,0,0,.5);">
+                <span style="width: 5px; height: 5px; border-radius: 50%; background: #f2f4f6; animation: fz-breathe 3s ease-in-out infinite;"></span>
+                <span style="font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .16em; color: rgba(242,244,246,.72);">37 TITOLI</span>
+              </span>
+              <span style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #f2f4f6; color: #0e1012; font-size: 12px; font-weight: 500;">M</span>
+            </div>
+          </header>
+
+          <div style="position: absolute; left: 40px; top: 128px; width: 520px; z-index: 4;">
+            <p style="margin: 0; display: flex; align-items: center; gap: 11px; animation: fz-rise 620ms cubic-bezier(.16,.84,.28,1) 80ms both;">
+              <span style="font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .26em; color: rgba(242,244,246,.42);">STASERA</span>
+              <span style="flex: 1; height: 1px; background: linear-gradient(90deg, rgba(242,244,246,.3), transparent);"></span>
+            </p>
+            <h1 style="margin: 20px 0 0; font-size: 76px; line-height: .96; font-weight: 500; letter-spacing: -.036em; color: #fff; text-wrap: balance; animation: fz-rise 700ms cubic-bezier(.16,.84,.28,1) 160ms both;">Il Conformista</h1>
+            <div style="margin-top: 22px; display: flex; align-items: center; gap: 14px; font-size: 12.5px; color: rgba(242,244,246,.55); animation: fz-rise 700ms cubic-bezier(.16,.84,.28,1) 260ms both;">
+              <span>1970</span><span style="width: 3px; height: 3px; border-radius: 50%; background: rgba(242,244,246,.28);"></span>
+              <span>Drammatico</span><span style="width: 3px; height: 3px; border-radius: 50%; background: rgba(242,244,246,.28);"></span>
+              <span>113 min</span><span style="width: 3px; height: 3px; border-radius: 50%; background: rgba(242,244,246,.28);"></span>
+              <span style="padding: 2px 7px; border-radius: 4px; border: 1px solid rgba(242,244,246,.2);">VM14</span>
+            </div>
+            <div style-before="content: ''; position: absolute; left: -32%; top: -60%; width: 58%; height: 220%; transform: rotate(18deg); pointer-events: none; background: linear-gradient(90deg, transparent, rgba(255,255,255,.13), transparent);" style="position: relative; overflow: hidden; margin-top: 30px; padding: 22px 24px; border-radius: 22px; border: 1px solid rgba(255,255,255,.16); background: linear-gradient(154deg, rgba(255,255,255,.13), rgba(255,255,255,.045) 42%, rgba(255,255,255,.075)); backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%); box-shadow: inset 0 1px 0 rgba(255,255,255,.28), inset 0 -1px 1px rgba(0,0,0,.3), 0 18px 44px -20px rgba(0,0,0,.7); animation: fz-rise 760ms cubic-bezier(.16,.84,.28,1) 340ms both;">
+              <div style="display: flex; align-items: baseline; gap: 12px;">
+                <span style="font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .26em; color: rgba(242,244,246,.42);">AFFINITÀ</span>
+                <span style="margin-left: auto; font-size: 34px; font-weight: 400; letter-spacing: -.03em; color: #fff; font-variant-numeric: tabular-nums;">{{ aff }}</span>
+                <span style="font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .16em; color: rgba(242,244,246,.35);">/100</span>
+              </div>
+              <span style="display: block; margin-top: 12px; height: 2px; border-radius: 2px; background: rgba(242,244,246,.12); overflow: hidden;">
+                <i style="display: block; height: 100%; width: 86%; background: #f2f4f6; transform-origin: left; animation: fz-bar 900ms cubic-bezier(.16,.84,.28,1) 700ms both;"></i>
+              </span>
+              <p style="margin: 18px 0 0; font-size: 14.5px; line-height: 1.62; color: rgba(242,244,246,.76); text-wrap: pretty;">Hai amato <b style="font-weight: 500; color: #fff;">Il Divo</b> e <b style="font-weight: 500; color: #fff;">Salò</b>. In libreria ci sono cinque italiani degli anni Settanta con lo stesso impianto politico: Bertolucci lavora la stessa materia, con una fotografia che ti riguarda.</p>
+              <div style="margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px;">
+                <span style="padding: 5px 10px; border-radius: 100px; border: 1px solid rgba(255,255,255,.14); background: linear-gradient(150deg, rgba(255,255,255,.11), rgba(255,255,255,.035) 50%, rgba(255,255,255,.06)); backdrop-filter: blur(20px) saturate(170%); -webkit-backdrop-filter: blur(20px) saturate(170%); box-shadow: inset 0 1px 0 rgba(255,255,255,.24); font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .12em; color: rgba(242,244,246,.62);">CINEMA ITALIANO +34</span>
+                <span style="padding: 5px 10px; border-radius: 100px; border: 1px solid rgba(255,255,255,.14); background: linear-gradient(150deg, rgba(255,255,255,.11), rgba(255,255,255,.035) 50%, rgba(255,255,255,.06)); backdrop-filter: blur(20px) saturate(170%); -webkit-backdrop-filter: blur(20px) saturate(170%); box-shadow: inset 0 1px 0 rgba(255,255,255,.24); font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .12em; color: rgba(242,244,246,.62);">POLITICA +21</span>
+                <span style="padding: 5px 10px; border-radius: 100px; border: 1px solid rgba(255,255,255,.14); background: linear-gradient(150deg, rgba(255,255,255,.11), rgba(255,255,255,.035) 50%, rgba(255,255,255,.06)); backdrop-filter: blur(20px) saturate(170%); -webkit-backdrop-filter: blur(20px) saturate(170%); box-shadow: inset 0 1px 0 rgba(255,255,255,.24); font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .12em; color: rgba(242,244,246,.62);">ANNI 70 +12</span>
+              </div>
+            </div>
+            <div style="margin-top: 22px; display: flex; flex-wrap: wrap; gap: 10px; animation: fz-rise 760ms cubic-bezier(.16,.84,.28,1) 420ms both;">
+              <button style="display: inline-flex; align-items: center; gap: 9px; padding: 14px 24px; border-radius: 100px; border: 0; background: linear-gradient(180deg, #ffffff, #e5e9ec); color: #0e1012; box-shadow: inset 0 1px 0 rgba(255,255,255,.95), inset 0 -1px 0 rgba(0,0,0,.14), 0 6px 20px -8px rgba(0,0,0,.6); font-family: inherit; font-size: 12.5px; font-weight: 500; cursor: pointer;" style-hover="background: #fff; transform: translateY(-1px);">
+                <span style="width: 0; height: 0; border-left: 7px solid currentColor; border-top: 5px solid transparent; border-bottom: 5px solid transparent;"></span>Guarda il trailer</button>
+              <button style="padding: 14px 22px; border-radius: 100px; border: 1px solid rgba(255,255,255,.18); background: linear-gradient(150deg, rgba(255,255,255,.15), rgba(255,255,255,.05) 48%, rgba(255,255,255,.09)); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%); box-shadow: inset 0 1px 0 rgba(255,255,255,.32), inset 0 -1px 0 rgba(0,0,0,.22), 0 4px 14px -6px rgba(0,0,0,.5); color: #f2f4f6; font-family: inherit; font-size: 12.5px; cursor: pointer;" style-hover="border-color: rgba(242,244,246,.45);">Salva per stasera</button>
+              <button style="padding: 14px 18px; border-radius: 100px; border: 1px solid transparent; background: transparent; color: rgba(242,244,246,.45); font-family: inherit; font-size: 12.5px; cursor: pointer;" style-hover="color: #f2f4f6;">Non mi interessa</button>
+            </div>
+          </div>
+
+          <div style="position: absolute; right: 40px; top: 138px; z-index: 6; display: flex; flex-direction: column; gap: 9px; align-items: center;">
+            <span style="font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .2em; color: rgba(242,244,246,.5); font-variant-numeric: tabular-nums;">01</span>
+            <span style="width: 1px; height: 22px; background: #f2f4f6;"></span>
+            <span style="width: 1px; height: 22px; background: rgba(242,244,246,.16);"></span>
+            <span style="width: 1px; height: 22px; background: rgba(242,244,246,.16);"></span>
+            <span style="width: 1px; height: 22px; background: rgba(242,244,246,.16);"></span>
+            <span style="width: 1px; height: 22px; background: rgba(242,244,246,.16);"></span>
+            <span style="font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .2em; color: rgba(242,244,246,.28); font-variant-numeric: tabular-nums;">06</span>
+          </div>
+
+          <div style="position: absolute; left: 0; right: 0; bottom: 0; z-index: 5; padding: 20px 40px 24px; background: linear-gradient(transparent, rgba(14,16,18,.86) 42%, #0e1012);">
+            <div style="display: flex; align-items: baseline; gap: 12px; margin-bottom: 14px;">
+              <span style="font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .26em; color: rgba(242,244,246,.42);">ALTRE CINQUE PROPOSTE</span>
+              <span style="flex: 1; height: 1px; background: rgba(242,244,246,.1);"></span>
+              <a href="#2a" style="font-size: 11.5px; color: rgba(242,244,246,.55);" style-hover="color: #f2f4f6;">Rigenera</a>
+            </div>
+            <div style="display: flex; gap: 14px;">
+              <sc-for list="{{ strip }}" as="s" hint-placeholder-count="5">
+                <button style="flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,.18); background: linear-gradient(150deg, rgba(255,255,255,.15), rgba(255,255,255,.05) 48%, rgba(255,255,255,.09)); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%); box-shadow: inset 0 1px 0 rgba(255,255,255,.32), inset 0 -1px 0 rgba(0,0,0,.22), 0 4px 14px -6px rgba(0,0,0,.5); cursor: pointer; text-align: left; font-family: inherit; animation: fz-rise 600ms cubic-bezier(.16,.84,.28,1) both; animation-delay: {{ s.delay }};" style-hover="border-color: rgba(242,244,246,.3); background: rgba(242,244,246,.07); transform: translateY(-3px);">
+                  <span style="flex: none; width: 34px; height: 51px; border-radius: 4px; background-color: #23272b; background-image: repeating-linear-gradient(122deg, rgba(255,255,255,.05) 0 6px, rgba(255,255,255,0) 6px 12px);"></span>
+                  <span style="min-width: 0; display: flex; flex-direction: column; gap: 4px;">
+                    <span style="font-size: 12px; font-weight: 500; color: #f2f4f6; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ s.title }}</span>
+                    <span style="display: flex; align-items: center; gap: 7px;">
+                      <span style="font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; color: rgba(242,244,246,.72); font-variant-numeric: tabular-nums;">{{ s.match }}</span>
+                      <span style="width: 34px; height: 2px; border-radius: 2px; background: rgba(242,244,246,.14); overflow: hidden;"><i style="display: block; height: 100%; width: {{ s.pct }}; background: rgba(242,244,246,.7);"></i></span>
+                    </span>
+                  </span>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sv-opt" id="2b">
+      <div class="sv-olabel"><a class="sv-oid" href="#2b">2b</a><span><b>LIBRERIA.</b> Lo stesso linguaggio applicato a molti oggetti: muro di locandine a tutta larghezza, nessuna cornice, nessuna sigla d'angolo. I filtri sono pillole di vetro; il voto vive sulla locandina solo al passaggio. La ricerca è un campo grande, non una lente compressa nella barra.</span></div>
+      <div class="sv-card" style="width: 1160px;">
+        <div style="position: relative; width: 1160px; height: 725px; overflow: hidden; background: #0e1012; color: #f2f4f6; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+          <div style="position: absolute; inset: 0; background: radial-gradient(110% 70% at 20% -10%, #202427, #0e1012 60%);"></div>
+
+          <header style="position: relative; z-index: 5; display: flex; align-items: center; gap: 32px; padding: 22px 40px; border-bottom: 1px solid rgba(255,255,255,.12); background: linear-gradient(180deg, rgba(255,255,255,.11), rgba(255,255,255,.028)); backdrop-filter: blur(44px) saturate(185%); -webkit-backdrop-filter: blur(44px) saturate(185%); box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 12px 30px -22px rgba(0,0,0,.9);">
+            <div style="display: flex; align-items: center; gap: 11px; flex: none;">
+              <span style="position: relative; width: 17px; height: 17px; display: block;" aria-hidden="true">
+                <span style="position: absolute; inset: 0; border-radius: 50%; background: #f2f4f6;"></span>
+                <span style="position: absolute; inset: 5px; border-radius: 50%; background: #0e1012;"></span>
+              </span>
+              <span style="font-size: 14px; font-weight: 500; letter-spacing: .34em; color: #f2f4f6;">FOSFORO</span>
+            </div>
+            <nav style="display: flex; align-items: center; gap: 26px; flex: none;">
+              <a href="#2a" style="font-size: 12px; font-weight: 400; color: rgba(242,244,246,.42);" style-hover="color: #f2f4f6;">Stasera</a>
+              <a href="#2b" style="font-size: 12px; font-weight: 500; color: #f2f4f6;">Libreria</a>
+              <a href="#2b" style="font-size: 12px; font-weight: 400; color: rgba(242,244,246,.42);" style-hover="color: #f2f4f6;">Diario</a>
+              <a href="#2c" style="font-size: 12px; font-weight: 400; color: rgba(242,244,246,.42);" style-hover="color: #f2f4f6;">Impostazioni</a>
+            </nav>
+            <div style="margin-left: auto; display: flex; align-items: center; gap: 12px; flex: none;">
+              <button style="padding: 10px 18px; border-radius: 100px; border: 0; background: linear-gradient(180deg, #ffffff, #e5e9ec); color: #0e1012; box-shadow: inset 0 1px 0 rgba(255,255,255,.95), inset 0 -1px 0 rgba(0,0,0,.14), 0 6px 20px -8px rgba(0,0,0,.6); font-family: inherit; font-size: 12px; font-weight: 500; cursor: pointer;" style-hover="background: #fff;">＋ Aggiungi un titolo</button>
+              <span style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #f2f4f6; color: #0e1012; font-size: 12px; font-weight: 500;">M</span>
+            </div>
+          </header>
+
+          <div style="position: relative; z-index: 4; padding: 18px 40px 0; animation: fz-rise 620ms cubic-bezier(.16,.84,.28,1) 60ms both;">
+            <div style="display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 30px; align-items: end;">
+              <div style="min-width: 0;">
+                <h1 style="margin: 0; font-size: 52px; line-height: 1; font-weight: 500; letter-spacing: -.035em; color: #fff;">Libreria</h1>
+                <p style="margin: 12px 0 0; font-size: 13px; color: rgba(242,244,246,.5);">37 titoli · 29 votati · 6 in lista · 2 da confermare</p>
+              </div>
+              <label style="flex: none; display: flex; align-items: center; gap: 11px; width: 300px; padding: 0 18px; height: 44px; border-radius: 100px; border: 1px solid rgba(255,255,255,.18); background: linear-gradient(150deg, rgba(255,255,255,.15), rgba(255,255,255,.05) 48%, rgba(255,255,255,.09)); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%); box-shadow: inset 0 1px 0 rgba(255,255,255,.32), inset 0 -1px 0 rgba(0,0,0,.22), 0 4px 14px -6px rgba(0,0,0,.5);">
+                <span style="width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid rgba(242,244,246,.5); flex: none;" aria-hidden="true"></span>
+                <input type="search" placeholder="Cerca un titolo, un regista, un anno" style="width: 100%; min-width: 0; padding: 0; border: 0; background: transparent; outline: none; font-family: inherit; font-size: 12.5px; color: #f2f4f6;" />
+              </label>
+            </div>
+
+            <div style="margin-top: 24px; display: flex; flex-wrap: wrap; gap: 8px;">
+              <sc-for list="{{ filters }}" as="f" hint-placeholder-count="6">
+                <button style="padding: 9px 16px; border-radius: 100px; border: 1px solid {{ f.border }}; background: {{ f.bg }}; color: {{ f.ink }}; font-family: inherit; font-size: 12px; font-weight: 400; cursor: pointer;" style-hover="border-color: rgba(242,244,246,.42); color: #fff;">{{ f.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="position: relative; z-index: 4; margin-top: 26px; padding: 0 40px;">
+            <div style="display: grid; grid-template-columns: repeat(8, minmax(0,1fr)); gap: 18px;">
+              <sc-for list="{{ wall }}" as="w" hint-placeholder-count="16">
+                <button style="min-width: 0; padding: 0; border: 0; background: transparent; cursor: pointer; text-align: left; font-family: inherit; animation: fz-up 620ms cubic-bezier(.16,.84,.28,1) both; animation-delay: {{ w.delay }};" style-hover="transform: translateY(-6px);">
+                  <span style="position: relative; display: block; width: 100%; aspect-ratio: 2/3; border-radius: 8px; overflow: hidden; background-color: #23272b; background-image: repeating-linear-gradient(122deg, rgba(255,255,255,.04) 0 8px, rgba(255,255,255,0) 8px 16px);">
+                    <span style="position: absolute; left: 0; right: 0; bottom: 0; padding: 22px 10px 9px; background: linear-gradient(transparent, rgba(14,16,18,.9)); display: flex; align-items: center; gap: 6px;">
+                      <span style="width: 5px; height: 5px; border-radius: 50%; background: {{ w.dot }};"></span>
+                      <span style="font-family: 'WNMono', ui-monospace, monospace; font-size: 8px; letter-spacing: .14em; color: rgba(242,244,246,.72);">{{ w.state }}</span>
+                    </span>
+                  </span>
+                  <span style="display: block; margin-top: 9px; font-size: 12px; font-weight: 500; color: #f2f4f6; line-height: 1.32; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ w.title }}</span>
+                  <span style="display: block; margin-top: 3px; font-size: 11px; color: rgba(242,244,246,.42); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ w.meta }}</span>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 74px; background: linear-gradient(transparent, #0e1012 70%);"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sv-opt" id="2c">
+      <div class="sv-olabel"><a class="sv-oid" href="#2c">2c</a><span><b>IMPOSTAZIONI.</b> Una colonna sola, larga da leggere, con le voci raggruppate per conseguenza e non per categoria tecnica. Ogni interruttore ha sotto la frase che dice cosa cambia davvero. Le opzioni sono quelle vere del codice: chiave API, sorgente locandine, tracciamento, pannello per sito, lingua, profili, dati locali.</span></div>
+      <div class="sv-card" style="width: 1160px;">
+        <div style="position: relative; width: 1160px; height: 725px; overflow: hidden; background: #0e1012; color: #f2f4f6; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+          <div style="position: absolute; inset: 0; background: radial-gradient(90% 60% at 50% -14%, #1e2225, #0e1012 58%);"></div>
+
+          <header style="position: relative; z-index: 5; display: flex; align-items: center; gap: 32px; padding: 22px 40px; border-bottom: 1px solid rgba(255,255,255,.12); background: linear-gradient(180deg, rgba(255,255,255,.11), rgba(255,255,255,.028)); backdrop-filter: blur(44px) saturate(185%); -webkit-backdrop-filter: blur(44px) saturate(185%); box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 12px 30px -22px rgba(0,0,0,.9);">
+            <div style="display: flex; align-items: center; gap: 11px; flex: none;">
+              <span style="position: relative; width: 17px; height: 17px; display: block;" aria-hidden="true">
+                <span style="position: absolute; inset: 0; border-radius: 50%; background: #f2f4f6;"></span>
+                <span style="position: absolute; inset: 5px; border-radius: 50%; background: #0e1012;"></span>
+              </span>
+              <span style="font-size: 14px; font-weight: 500; letter-spacing: .34em; color: #f2f4f6;">FOSFORO</span>
+            </div>
+            <nav style="display: flex; align-items: center; gap: 26px; flex: none;">
+              <a href="#2a" style="font-size: 12px; font-weight: 400; color: rgba(242,244,246,.42);" style-hover="color: #f2f4f6;">Stasera</a>
+              <a href="#2b" style="font-size: 12px; font-weight: 400; color: rgba(242,244,246,.42);" style-hover="color: #f2f4f6;">Libreria</a>
+              <a href="#2c" style="font-size: 12px; font-weight: 400; color: rgba(242,244,246,.42);" style-hover="color: #f2f4f6;">Diario</a>
+              <a href="#2c" style="font-size: 12px; font-weight: 500; color: #f2f4f6;">Impostazioni</a>
+            </nav>
+            <span style="margin-left: auto; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #f2f4f6; color: #0e1012; font-size: 12px; font-weight: 500; flex: none;">M</span>
+          </header>
+
+          <div style="position: relative; z-index: 4; padding: 22px 40px 0; display: grid; grid-template-columns: 200px minmax(0,1fr); gap: 48px; height: 640px;">
+
+            <aside style="animation: fz-rise 620ms cubic-bezier(.16,.84,.28,1) 60ms both;">
+              <h1 style="margin: 0; font-size: 34px; line-height: 1.02; font-weight: 500; letter-spacing: -.032em; color: #fff;">Impostazioni</h1>
+              <div style="margin-top: 26px; display: flex; flex-direction: column; gap: 2px;">
+                <a href="#2c" style="padding: 10px 14px; border-radius: 100px; border: 1px solid rgba(255,255,255,.14); background: linear-gradient(150deg, rgba(255,255,255,.11), rgba(255,255,255,.035) 50%, rgba(255,255,255,.06)); backdrop-filter: blur(20px) saturate(170%); -webkit-backdrop-filter: blur(20px) saturate(170%); box-shadow: inset 0 1px 0 rgba(255,255,255,.24); font-size: 12.5px; font-weight: 500; color: #fff;">Consigli</a>
+                <a href="#2c" style="padding: 10px 14px; border-radius: 100px; font-size: 12.5px; color: rgba(242,244,246,.45);" style-hover="color: #fff; background: rgba(242,244,246,.05);">Registrazione</a>
+                <a href="#2c" style="padding: 10px 14px; border-radius: 100px; font-size: 12.5px; color: rgba(242,244,246,.45);" style-hover="color: #fff; background: rgba(242,244,246,.05);">Aspetto</a>
+                <a href="#2c" style="padding: 10px 14px; border-radius: 100px; font-size: 12.5px; color: rgba(242,244,246,.45);" style-hover="color: #fff; background: rgba(242,244,246,.05);">Profili</a>
+                <a href="#2c" style="padding: 10px 14px; border-radius: 100px; font-size: 12.5px; color: rgba(242,244,246,.45);" style-hover="color: #fff; background: rgba(242,244,246,.05);">I tuoi dati</a>
+              </div>
+              <p style="margin: 30px 0 0; font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .18em; line-height: 1.8; color: rgba(242,244,246,.3);">FOSFORO 2.6<br />SAFARI · MACOS<br />OFFLINE READY</p>
+            </aside>
+
+            <div style="min-width: 0; overflow: hidden; display: flex; flex-direction: column; gap: 14px;">
+
+              <div style="padding: 26px 28px; border-radius: 20px; border: 1px solid rgba(255,255,255,.16); background: linear-gradient(154deg, rgba(255,255,255,.13), rgba(255,255,255,.045) 42%, rgba(255,255,255,.075)); backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%); box-shadow: inset 0 1px 0 rgba(255,255,255,.28), inset 0 -1px 1px rgba(0,0,0,.3), 0 18px 44px -20px rgba(0,0,0,.7); animation: fz-rise 700ms cubic-bezier(.16,.84,.28,1) 140ms both;">
+                <div style="display: flex; align-items: baseline; gap: 12px;">
+                  <h2 style="margin: 0; font-size: 17px; font-weight: 500; letter-spacing: -.012em; color: #fff;">Chiave API di Claude</h2>
+                  <span style="margin-left: auto; display: flex; align-items: center; gap: 7px;">
+                    <span style="width: 5px; height: 5px; border-radius: 50%; background: #f2f4f6;"></span>
+                    <span style="font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .18em; color: rgba(242,244,246,.6);">COLLEGATA</span>
+                  </span>
+                </div>
+                <p style="margin: 10px 0 0; max-width: 62ch; font-size: 13px; line-height: 1.6; color: rgba(242,244,246,.6);">Senza chiave Fosforo funziona in modalità demo: registra cosa guardi, ma non genera consigli. La chiave resta sul tuo Mac e non passa da nessun server nostro.</p>
+                <div style="margin-top: 18px; display: flex; gap: 10px;">
+                  <input type="password" value="sk-ant-api03-••••••••••••••••••••7f2a" style="flex: 1; min-width: 0; padding: 13px 16px; border-radius: 100px; border: 1px solid rgba(255,255,255,.14); background: linear-gradient(150deg, rgba(255,255,255,.11), rgba(255,255,255,.035) 50%, rgba(255,255,255,.06)); backdrop-filter: blur(20px) saturate(170%); -webkit-backdrop-filter: blur(20px) saturate(170%); box-shadow: inset 0 1px 0 rgba(255,255,255,.24); outline: none; font-family: 'WNMono', ui-monospace, monospace; font-size: 12px; letter-spacing: .04em; color: #f2f4f6;" />
+                  <button style="padding: 13px 22px; border-radius: 100px; border: 0; background: linear-gradient(180deg, #ffffff, #e5e9ec); color: #0e1012; box-shadow: inset 0 1px 0 rgba(255,255,255,.95), inset 0 -1px 0 rgba(0,0,0,.14), 0 6px 20px -8px rgba(0,0,0,.6); font-family: inherit; font-size: 12px; font-weight: 500; cursor: pointer;" style-hover="background: #fff;">Verifica</button>
+                </div>
+              </div>
+
+              <div style="padding: 26px 28px; border-radius: 20px; border: 1px solid rgba(255,255,255,.16); background: linear-gradient(154deg, rgba(255,255,255,.13), rgba(255,255,255,.045) 42%, rgba(255,255,255,.075)); backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%); box-shadow: inset 0 1px 0 rgba(255,255,255,.28), inset 0 -1px 1px rgba(0,0,0,.3), 0 18px 44px -20px rgba(0,0,0,.7); animation: fz-rise 700ms cubic-bezier(.16,.84,.28,1) 220ms both;">
+                <h2 style="margin: 0; font-size: 17px; font-weight: 500; letter-spacing: -.012em; color: #fff;">Da dove arrivano le locandine</h2>
+                <p style="margin: 10px 0 0; max-width: 62ch; font-size: 13px; line-height: 1.6; color: rgba(242,244,246,.6);">Fosforo non ha un archivio di immagini: le prende da fuori. Scegliere «dal sito» significa nessuna richiesta a terzi.</p>
+                <div style="margin-top: 18px; display: flex; gap: 8px;">
+                  <sc-for list="{{ posterOpts }}" as="p" hint-placeholder-count="3">
+                    <button style="flex: 1; min-width: 0; padding: 14px 16px; border-radius: 12px; border: 1px solid {{ p.border }}; background: {{ p.bg }}; cursor: pointer; text-align: left; font-family: inherit;" style-hover="border-color: rgba(242,244,246,.42);">
+                      <span style="display: block; font-size: 12.5px; font-weight: 500; color: {{ p.ink }};">{{ p.label }}</span>
+                      <span style="display: block; margin-top: 5px; font-size: 11px; line-height: 1.45; color: rgba(242,244,246,.45);">{{ p.note }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+              </div>
+
+              <div style="padding: 8px 28px; border-radius: 18px; border: 1px solid rgba(255,255,255,.16); background: linear-gradient(154deg, rgba(255,255,255,.13), rgba(255,255,255,.045) 42%, rgba(255,255,255,.075)); backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%); box-shadow: inset 0 1px 0 rgba(255,255,255,.28), inset 0 -1px 1px rgba(0,0,0,.3), 0 18px 44px -20px rgba(0,0,0,.7); animation: fz-rise 700ms cubic-bezier(.16,.84,.28,1) 300ms both;">
+                <sc-for list="{{ toggles }}" as="tg" hint-placeholder-count="3">
+                  <div style="display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 24px; align-items: center; padding: 18px 0; border-bottom: 1px solid {{ tg.sep }};">
+                    <div style="min-width: 0;">
+                      <p style="margin: 0; font-size: 13.5px; font-weight: 500; color: #fff;">{{ tg.label }}</p>
+                      <p style="margin: 5px 0 0; max-width: 58ch; font-size: 12px; line-height: 1.55; color: rgba(242,244,246,.5);">{{ tg.note }}</p>
+                    </div>
+                    <span style="flex: none; position: relative; width: 46px; height: 27px; border-radius: 100px; background: {{ tg.trackBg }}; border: 1px solid {{ tg.trackBorder }}; cursor: pointer;">
+                      <span style="position: absolute; top: 3px; left: {{ tg.knobLeft }}; width: 19px; height: 19px; border-radius: 50%; background: {{ tg.knob }};"></span>
+                    </span>
+                  </div>
+                </sc-for>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 14px; padding: 20px 28px; border-radius: 20px; border: 1px solid rgba(255,255,255,.14); background: linear-gradient(150deg, rgba(255,255,255,.11), rgba(255,255,255,.035) 50%, rgba(255,255,255,.06)); backdrop-filter: blur(20px) saturate(170%); -webkit-backdrop-filter: blur(20px) saturate(170%); box-shadow: inset 0 1px 0 rgba(255,255,255,.24); animation: fz-rise 700ms cubic-bezier(.16,.84,.28,1) 380ms both;">
+                <div style="min-width: 0; flex: 1;">
+                  <p style="margin: 0; font-size: 13.5px; font-weight: 500; color: #fff;">I tuoi dati restano qui</p>
+                  <p style="margin: 5px 0 0; font-size: 12px; line-height: 1.55; color: rgba(242,244,246,.5);">37 titoli, 29 voti, 2 profili. Niente account, niente sincronizzazione, niente server.</p>
+                </div>
+                <button style="flex: none; padding: 11px 18px; border-radius: 100px; border: 1px solid rgba(255,255,255,.18); background: linear-gradient(150deg, rgba(255,255,255,.15), rgba(255,255,255,.05) 48%, rgba(255,255,255,.09)); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%); box-shadow: inset 0 1px 0 rgba(255,255,255,.32), inset 0 -1px 0 rgba(0,0,0,.22), 0 4px 14px -6px rgba(0,0,0,.5); color: #f2f4f6; font-family: inherit; font-size: 12px; cursor: pointer;" style-hover="border-color: rgba(242,244,246,.45);">Esporta</button>
+                <button style="flex: none; padding: 11px 18px; border-radius: 100px; border: 1px solid rgba(255,120,110,.35); background: transparent; color: #ff8c84; font-family: inherit; font-size: 12px; cursor: pointer;" style-hover="border-color: #ff8c84; background: rgba(255,120,110,.1);">Cancella tutto</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sv-opt" id="2d">
+      <div class="sv-olabel"><a class="sv-oid" href="#2d">2d</a><span><b>OVERLAY.</b> Sulla pagina che stai guardando. Non è una finestra dell'estensione trapiantata: è una singola pillola di vetro in basso a destra che si apre in scheda. Non copre i controlli del player, non ha bordi luminosi, e dice in chiaro cos'ha registrato e come annullarlo.</span></div>
+      <div class="sv-card" style="width: 900px;">
+        <div style="position: relative; width: 900px; height: 540px; overflow: hidden; background: #08090a; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+
+          <div style="position: absolute; inset: 0; display: flex; flex-direction: column;">
+            <div style="flex: none; display: flex; align-items: center; gap: 10px; padding: 11px 14px; background: #2a2d30; border-bottom: 1px solid rgba(255,255,255,.06);">
+              <span style="display: flex; gap: 7px;">
+                <span style="width: 11px; height: 11px; border-radius: 50%; background: #5c6165;"></span>
+                <span style="width: 11px; height: 11px; border-radius: 50%; background: #5c6165;"></span>
+                <span style="width: 11px; height: 11px; border-radius: 50%; background: #5c6165;"></span>
+              </span>
+              <span style="margin-left: 12px; flex: 1; max-width: 420px; padding: 6px 14px; border-radius: 7px; background: #1d2022; font-family: 'WNMono', ui-monospace, monospace; font-size: 10.5px; color: rgba(255,255,255,.5); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">rai­play.it/programmi/ilconformista</span>
+            </div>
+            <div style="flex: 1; position: relative; background: #101214; background-image: repeating-linear-gradient(122deg, rgba(255,255,255,.02) 0 14px, rgba(255,255,255,0) 14px 28px);">
+              <span style="position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); font-family: 'WNMono', ui-monospace, monospace; font-size: 10px; letter-spacing: .24em; color: rgba(255,255,255,.16);">PAGINA VIDEO · PLAYER IN RIPRODUZIONE</span>
+              <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 22px 26px; background: linear-gradient(transparent, rgba(0,0,0,.72));">
+                <span style="display: block; height: 3px; border-radius: 3px; background: rgba(255,255,255,.2); overflow: hidden;"><i style="display: block; height: 100%; width: 34%; background: #fff;"></i></span>
+                <div style="margin-top: 14px; display: flex; align-items: center; gap: 18px; color: rgba(255,255,255,.85);">
+                  <span style="width: 0; height: 0; border-left: 11px solid currentColor; border-top: 7px solid transparent; border-bottom: 7px solid transparent;"></span>
+                  <span style="font-family: 'WNMono', ui-monospace, monospace; font-size: 11px; font-variant-numeric: tabular-nums;">38:24 / 1:53:10</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="position: absolute; right: 22px; bottom: 96px; z-index: 5; width: 318px; border-radius: 22px; border: 1px solid rgba(255,255,255,.2); background: linear-gradient(158deg, rgba(255,255,255,.16), rgba(28,32,35,.5) 40%, rgba(20,23,25,.62)); backdrop-filter: blur(52px) saturate(200%); -webkit-backdrop-filter: blur(52px) saturate(200%); box-shadow: inset 0 1px 0 rgba(255,255,255,.36), inset 0 -1px 1px rgba(0,0,0,.4), 0 26px 60px -22px rgba(0,0,0,.9); overflow: hidden; animation: fz-slidein 620ms cubic-bezier(.16,.84,.28,1) 400ms both;">
+            <div style="display: flex; align-items: center; gap: 10px; padding: 15px 17px 13px; border-bottom: 1px solid rgba(242,244,246,.08);">
+              <span style="position: relative; width: 15px; height: 15px; display: block; flex: none;" aria-hidden="true">
+                <span style="position: absolute; inset: 0; border-radius: 50%; background: #f2f4f6;"></span>
+                <span style="position: absolute; inset: 4.5px; border-radius: 50%; background: #141719;"></span>
+              </span>
+              <span style="font-size: 11px; font-weight: 500; letter-spacing: .28em; color: #f2f4f6;">FOSFORO</span>
+              <span style="margin-left: auto; font-size: 15px; line-height: 1; color: rgba(242,244,246,.4); cursor: pointer;" style-hover="color: #f2f4f6;">✕</span>
+            </div>
+
+            <div style="padding: 17px;">
+              <p style="margin: 0; font-family: 'WNMono', ui-monospace, monospace; font-size: 8.5px; letter-spacing: .22em; color: rgba(242,244,246,.42);">REGISTRATO ORA</p>
+              <div style="margin-top: 12px; display: flex; gap: 13px; align-items: flex-start;">
+                <span style="flex: none; width: 46px; height: 69px; border-radius: 5px; background-color: #262a2e; background-image: repeating-linear-gradient(122deg, rgba(255,255,255,.05) 0 7px, rgba(255,255,255,0) 7px 14px);"></span>
+                <div style="min-width: 0;">
+                  <p style="margin: 0; font-size: 14.5px; font-weight: 500; line-height: 1.25; color: #fff;">Il Conformista</p>
+                  <p style="margin: 5px 0 0; font-size: 11.5px; color: rgba(242,244,246,.5);">1970 · Drammatico · raiplay.it</p>
+                  <p style="margin: 9px 0 0; font-size: 11.5px; line-height: 1.5; color: rgba(242,244,246,.62);">È entrato in libreria. Se non è lui, toglilo: non lo riproporrò.</p>
+                </div>
+              </div>
+
+              <div style="margin-top: 15px; display: flex; gap: 7px;">
+                <button style="flex: 1; padding: 11px 12px; border-radius: 100px; border: 0; background: linear-gradient(180deg, #ffffff, #e5e9ec); color: #0e1012; box-shadow: inset 0 1px 0 rgba(255,255,255,.95), inset 0 -1px 0 rgba(0,0,0,.14), 0 6px 20px -8px rgba(0,0,0,.6); font-family: inherit; font-size: 11.5px; font-weight: 500; cursor: pointer;" style-hover="background: #fff;">È giusto</button>
+                <button style="flex: 1; padding: 11px 12px; border-radius: 100px; border: 1px solid rgba(255,255,255,.18); background: linear-gradient(150deg, rgba(255,255,255,.15), rgba(255,255,255,.05) 48%, rgba(255,255,255,.09)); backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%); box-shadow: inset 0 1px 0 rgba(255,255,255,.32), inset 0 -1px 0 rgba(0,0,0,.22), 0 4px 14px -6px rgba(0,0,0,.5); color: #f2f4f6; font-family: inherit; font-size: 11.5px; cursor: pointer;" style-hover="border-color: rgba(242,244,246,.45);">Toglilo</button>
+              </div>
+
+              <div style="margin-top: 17px; padding-top: 15px; border-top: 1px solid rgba(242,244,246,.08);">
+                <p style="margin: 0; font-family: 'WNMono', ui-monospace, monospace; font-size: 8.5px; letter-spacing: .22em; color: rgba(242,244,246,.42);">QUANDO FINISCI, COM'ERA?</p>
+                <div style="margin-top: 11px; display: flex; gap: 6px;">
+                  <sc-for list="{{ ratings }}" as="rt" hint-placeholder-count="4">
+                    <button style="flex: 1; min-width: 0; padding: 9px 6px; border-radius: 8px; border: 1px solid rgba(255,255,255,.14); background: linear-gradient(150deg, rgba(255,255,255,.11), rgba(255,255,255,.035) 50%, rgba(255,255,255,.06)); backdrop-filter: blur(20px) saturate(170%); -webkit-backdrop-filter: blur(20px) saturate(170%); box-shadow: inset 0 1px 0 rgba(255,255,255,.24); color: rgba(242,244,246,.78); font-family: inherit; font-size: 10.5px; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" style-hover="border-color: #f2f4f6; color: #fff; background: rgba(242,244,246,.1);">{{ rt }}</button>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px; padding: 12px 17px; border-top: 1px solid rgba(255,255,255,.12); background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.02));">
+              <span style="font-size: 11px; color: rgba(242,244,246,.5);">Non registrare su raiplay.it</span>
+              <span style="margin-left: auto; position: relative; width: 34px; height: 20px; border-radius: 100px; background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.18)); border: 1px solid rgba(255,255,255,.2); box-shadow: inset 0 1px 2px rgba(0,0,0,.35); cursor: pointer; flex: none;">
+                <span style="position: absolute; top: 2.5px; left: 3px; width: 13px; height: 13px; border-radius: 50%; background: rgba(242,244,246,.6);"></span>
+              </span>
+            </div>
+          </div>
+
+          <div style="position: absolute; right: 22px; bottom: 22px; z-index: 5; display: flex; align-items: center; gap: 9px; padding: 11px 15px; border-radius: 100px; border: 1px solid rgba(255,255,255,.2); background: linear-gradient(158deg, rgba(255,255,255,.16), rgba(28,32,35,.5) 40%, rgba(20,23,25,.62)); backdrop-filter: blur(52px) saturate(200%); -webkit-backdrop-filter: blur(52px) saturate(200%); box-shadow: inset 0 1px 0 rgba(255,255,255,.36), inset 0 -1px 1px rgba(0,0,0,.4), 0 26px 60px -22px rgba(0,0,0,.9); cursor: pointer; animation: fz-fade 500ms ease 200ms both;" style-hover="border-color: rgba(242,244,246,.4);">
+            <span style="position: relative; width: 14px; height: 14px; display: block;" aria-hidden="true">
+              <span style="position: absolute; inset: 0; border-radius: 50%; background: #f2f4f6;"></span>
+              <span style="position: absolute; inset: 4px; border-radius: 50%; background: #141719;"></span>
+            </span>
+            <span style="font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .2em; color: rgba(242,244,246,.78);">STO REGISTRANDO</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sv-opt" id="2e">
+      <div class="sv-olabel"><a class="sv-oid" href="#2e">2e</a><span><b>MARCHIO.</b> Il fosforo è un punto che si accende: un disco pieno con il centro vuoto — obiettivo, otturatore, pupilla. Due cerchi concentrici, niente altro, quindi regge a 16px come a 512. Sotto: costruzione, versioni, e l'icona su fondo grafite piatto.</span></div>
+      <div class="sv-card" style="width: 1160px;">
+        <div style="position: relative; width: 1160px; height: 470px; overflow: hidden; background: #0e1012; color: #f2f4f6; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 40px;">
+          <div style="position: absolute; inset: 0; background: radial-gradient(80% 60% at 50% 0%, #1c2023, #0e1012 60%);"></div>
+
+          <div style="position: relative; z-index: 2; display: grid; grid-template-columns: 300px minmax(0,1fr); gap: 48px; height: 390px;">
+
+            <div style="display: flex; flex-direction: column; gap: 22px;">
+              <div style="position: relative; width: 200px; height: 200px; align-self: center; animation: fz-fade 700ms ease both;">
+                <span style="position: absolute; inset: -18px; border-radius: 50%; border: 1px dashed rgba(242,244,246,.14); animation: fz-orbit 26s linear infinite;"></span>
+                <span style="position: absolute; inset: 0; border-radius: 50%; background: #f2f4f6;"></span>
+                <span style="position: absolute; inset: 58px; border-radius: 50%; background: #0e1012;"></span>
+                <span style="position: absolute; left: -30px; right: -30px; top: 50%; height: 1px; background: rgba(242,244,246,.1);"></span>
+                <span style="position: absolute; top: -30px; bottom: -30px; left: 50%; width: 1px; background: rgba(242,244,246,.1);"></span>
+              </div>
+              <div style="text-align: center;">
+                <p style="margin: 0; font-size: 22px; font-weight: 500; letter-spacing: .34em; color: #fff;">FOSFORO</p>
+                <p style="margin: 10px 0 0; font-size: 12px; color: rgba(242,244,246,.45);">Diametro interno = 29% del totale. Un solo rapporto, nessuna eccezione.</p>
+              </div>
+            </div>
+
+            <div style="min-width: 0; display: flex; flex-direction: column; gap: 26px;">
+
+              <div>
+                <p style="margin: 0; font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .26em; color: rgba(242,244,246,.42);">SCALE · 512 / 128 / 48 / 32 / 16</p>
+                <div style="margin-top: 18px; display: flex; align-items: flex-end; gap: 26px;">
+                  <sc-for list="{{ marks }}" as="mk" hint-placeholder-count="5">
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 9px;">
+                      <span style="position: relative; display: block; width: {{ mk.size }}; height: {{ mk.size }};">
+                        <span style="position: absolute; inset: 0; border-radius: 50%; background: #f2f4f6;"></span>
+                        <span style="position: absolute; inset: {{ mk.inset }}; border-radius: 50%; background: #0e1012;"></span>
+                      </span>
+                      <span style="font-family: 'WNMono', ui-monospace, monospace; font-size: 8.5px; letter-spacing: .16em; color: rgba(242,244,246,.38);">{{ mk.label }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+
+              <div>
+                <p style="margin: 0; font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .26em; color: rgba(242,244,246,.42);">ICONA APP · MACOS · ANGOLI SUPERELLITTICI</p>
+                <div style="margin-top: 18px; display: flex; align-items: center; gap: 22px;">
+                  <div style="position: relative; width: 104px; height: 104px; border-radius: 26px; background: linear-gradient(158deg, rgba(255,255,255,.22), rgba(43,48,52,.55) 42%, rgba(16,19,21,.85)); backdrop-filter: blur(30px) saturate(190%); -webkit-backdrop-filter: blur(30px) saturate(190%); border: 1px solid rgba(255,255,255,.2); box-shadow: 0 16px 36px -14px rgba(0,0,0,.9), inset 0 1px 0 rgba(255,255,255,.4), inset 0 -2px 2px rgba(0,0,0,.35); display: flex; align-items: center; justify-content: center;">
+                    <span style="position: relative; display: block; width: 52px; height: 52px;">
+                      <span style="position: absolute; inset: 0; border-radius: 50%; background: #f2f4f6;"></span>
+                      <span style="position: absolute; inset: 15px; border-radius: 50%; background: #1a1e21;"></span>
+                    </span>
+                  </div>
+                  <div style="position: relative; width: 104px; height: 104px; border-radius: 24px; background: #f2f4f6; box-shadow: 0 12px 30px -14px rgba(0,0,0,.9); display: flex; align-items: center; justify-content: center;">
+                    <span style="position: relative; display: block; width: 52px; height: 52px;">
+                      <span style="position: absolute; inset: 0; border-radius: 50%; background: #0e1012;"></span>
+                      <span style="position: absolute; inset: 15px; border-radius: 50%; background: #f2f4f6;"></span>
+                    </span>
+                  </div>
+                  <div style="min-width: 0; max-width: 32ch;">
+                    <p style="margin: 0; font-size: 12.5px; line-height: 1.6; color: rgba(242,244,246,.6);">In barra Safari il marchio è monocromatico e pieno: a 16px il centro vuoto è l'unica cosa che si legge, ed è quello che lo rende riconoscibile.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <p style="margin: 0; font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .26em; color: rgba(242,244,246,.42);">MATERIALI · QUATTRO VALORI, UN VETRO, NESSUN COLORE</p>
+                <div style="margin-top: 16px; display: flex; gap: 10px;">
+                  <sc-for list="{{ swatches }}" as="sw" hint-placeholder-count="6">
+                    <div style="flex: 1; min-width: 0;">
+                      <span style="display: block; height: 46px; border-radius: 12px; background: {{ sw.hex }}; border: 1px solid rgba(255,255,255,.16); box-shadow: inset 0 1px 0 rgba(255,255,255,.24), inset 0 -1px 1px rgba(0,0,0,.3);"></span>
+                      <span style="display: block; margin-top: 8px; font-family: 'WNMono', ui-monospace, monospace; font-size: 8.5px; letter-spacing: .12em; color: rgba(242,244,246,.55);">{{ sw.hex }}</span>
+                      <span style="display: block; margin-top: 3px; font-size: 10.5px; color: rgba(242,244,246,.35);">{{ sw.use }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="sv-next">Prova: «fai la versione giorno di <a class="sv-oid" href="#2b">2b</a>» · «l'overlay <a class="sv-oid" href="#2d">2d</a> anche in versione minima, solo la pillola» · «aggiungi la vista Diario nello stesso linguaggio»</p>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  state = { aff: 0 };
+
+  // Il numero sale una volta sola, in sincrono con la barra sotto (ritardo 700ms,
+  // durata 1100ms). Curva out: arriva con enfasi e si ferma, non frena a lungo.
+  componentDidMount() {
+    const target = 86, delay = 700, dur = 1100;
+    const reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) { this.setState({ aff: target }); return; }
+    this._t = setTimeout(() => {
+      const t0 = performance.now();
+      const step = (now) => {
+        const p = Math.min(1, (now - t0) / dur);
+        const eased = 1 - Math.pow(1 - p, 3);
+        this.setState({ aff: Math.round(target * eased) });
+        if (p < 1) this._raf = requestAnimationFrame(step);
+      };
+      this._raf = requestAnimationFrame(step);
+    }, delay);
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this._t);
+    cancelAnimationFrame(this._raf);
+  }
+
+  renderVals() {
+    const strip = [
+      { title: "Le mani sulla città", match: 81, pct: "81%", delay: "560ms" },
+      { title: "Indagine su un cittadino", match: 78, pct: "78%", delay: "640ms" },
+      { title: "La classe operaia va in paradiso", match: 74, pct: "74%", delay: "720ms" },
+      { title: "Sacco e Vanzetti", match: 69, pct: "69%", delay: "800ms" },
+      { title: "Todo Modo", match: 58, pct: "58%", delay: "880ms" }
+    ];
+
+    const on = { border: "rgba(255,255,255,.5)", bg: "linear-gradient(150deg, rgba(255,255,255,.3), rgba(255,255,255,.14) 48%, rgba(255,255,255,.2))", ink: "#fff" };
+    const off = { border: "rgba(255,255,255,.16)", bg: "linear-gradient(150deg, rgba(255,255,255,.12), rgba(255,255,255,.035) 50%, rgba(255,255,255,.06))", ink: "rgba(242,244,246,.72)" };
+    const filters = [
+      { label: "Tutti · 37", ...on },
+      { label: "Amati · 8", ...off },
+      { label: "Piaciuti · 12", ...off },
+      { label: "Da votare · 8", ...off },
+      { label: "In lista · 6", ...off },
+      { label: "Serie · 5", ...off }
+    ];
+
+    const lib = [
+      ["Il Divo", "2008 · Sorrentino", "AMATO"],
+      ["Salò", "1975 · Pasolini", "AMATO"],
+      ["L'Amica Geniale", "2018 · Serie", "AMATO"],
+      ["Gomorra", "2014 · Serie", "AMATO"],
+      ["La Grande Bellezza", "2013 · Sorrentino", "AMATO"],
+      ["Romanzo Criminale", "2005 · Placido", "PIACIUTO"],
+      ["È stata la mano di Dio", "2021 · Sorrentino", "AMATO"],
+      ["Mio fratello è figlio unico", "2007 · Luchetti", "PIACIUTO"],
+      ["Il traditore", "2019 · Bellocchio", "PIACIUTO"],
+      ["Suburra", "2015 · Sollima", "NELLA MEDIA"],
+      ["Lazzaro Felice", "2018 · Rohrwacher", "PIACIUTO"],
+      ["Dogman", "2018 · Garrone", "DA VOTARE"],
+      ["Le otto montagne", "2022 · Van Groeningen", "DA VOTARE"],
+      ["Nostalgia", "2022 · Martone", "DA VOTARE"],
+      ["Corpo Celeste", "2011 · Rohrwacher", "IN LISTA"],
+      ["Vermiglio", "2024 · Delpero", "IN LISTA"]
+    ];
+    const dotFor = (s) => s === "AMATO" ? "#f2f4f6" : s === "PIACIUTO" ? "rgba(242,244,246,.7)" : s === "IN LISTA" ? "rgba(242,244,246,.45)" : "rgba(242,244,246,.3)";
+    const wall = lib.map(([title, meta, state], n) => ({
+      title, meta, state, dot: dotFor(state), delay: (140 + n * 44) + "ms"
+    }));
+
+    const posterOpts = [
+      { label: "Dal sito che guardi", note: "Zero richieste esterne. È l'immagine che il sito già mostra.", border: "rgba(255,255,255,.48)", bg: "linear-gradient(154deg, rgba(255,255,255,.26), rgba(255,255,255,.11) 46%, rgba(255,255,255,.17))", ink: "#fff" },
+      { label: "TMDB", note: "Locandine complete e pulite. Una richiesta per titolo.", border: "rgba(255,255,255,.16)", bg: "linear-gradient(154deg, rgba(255,255,255,.11), rgba(255,255,255,.03) 50%, rgba(255,255,255,.055))", ink: "rgba(242,244,246,.86)" },
+      { label: "Nessuna", note: "Solo tipografia. La più veloce, e non chiede niente a nessuno.", border: "rgba(255,255,255,.16)", bg: "linear-gradient(154deg, rgba(255,255,255,.11), rgba(255,255,255,.03) 50%, rgba(255,255,255,.055))", ink: "rgba(242,244,246,.86)" }
+    ];
+
+    const t = (label, note, isOn, last) => ({
+      label, note,
+      sep: last ? "transparent" : "rgba(242,244,246,.08)",
+      trackBg: isOn ? "linear-gradient(180deg, #ffffff, #dfe4e8)" : "linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.16))",
+      trackBorder: isOn ? "rgba(255,255,255,.7)" : "rgba(255,255,255,.2)",
+      knob: isOn ? "#0e1012" : "rgba(242,244,246,.55)",
+      knobLeft: isOn ? "23px" : "3px"
+    });
+    const toggles = [
+      t("Registra da solo cosa guardo", "Fosforo riconosce film e serie sulle pagine che apri e li mette in attesa di conferma. Niente esce dal tuo Mac.", true),
+      t("Pannello sulla pagina video", "La pillola in basso a destra mentre guardi. Spegnendola, registra comunque in silenzio.", true),
+      t("Chiedimi il voto quando finisco", "Un voto vale più di dieci titoli senza voto: è quello che rende utili i consigli.", true),
+      t("Interfaccia in inglese", "Cambia solo le parole dell'interfaccia. I consigli restano nella lingua in cui scrivi le note.", false, true)
+    ];
+
+    const ratings = ["Amato", "Piaciuto", "Nella media", "No"];
+
+    const marks = [
+      { size: "88px", inset: "26px", label: "512" },
+      { size: "56px", inset: "16px", label: "128" },
+      { size: "34px", inset: "10px", label: "48" },
+      { size: "24px", inset: "7px", label: "32" },
+      { size: "16px", inset: "4.5px", label: "16" }
+    ];
+
+    const swatches = [
+      { hex: "#0E1012", use: "Grafite · fondo" },
+      { hex: "#1B1F22", use: "Superficie" },
+      { hex: "#23272B", use: "Pozzetto" },
+
+      { hex: "linear-gradient(154deg, rgba(255,255,255,.28), rgba(255,255,255,.09))", use: "Vetro · pannelli" },
+      { hex: "#F2F4F6", use: "Inchiostro · azione" },
+      { hex: "#FF8C84", use: "Solo distruttivo" }
+    ];
+
+    return { aff: this.state.aff, strip, filters, wall, posterOpts, toggles, ratings, marks, swatches };
+  }
+}
+</script>
+</body>
+</html>

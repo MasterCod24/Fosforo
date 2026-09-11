@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<style>
+@font-face { font-family: "WNMono"; src: url("assets/fonts/JetBrainsMono-var.woff2") format("woff2"); font-weight: 400 700; font-display: swap; }
+body { margin: 0; background: #16181a; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+a { color: #e8eaec; text-decoration: none; }
+a:hover { color: #fff; }
+.dv-turn { padding: 44px 48px 36px; border-bottom: 1px solid rgba(255,255,255,.08); scroll-margin-top: 16px; }
+.dv-thd { display: flex; align-items: baseline; gap: 10px; margin: 0 0 24px; }
+.dv-tid { font: 600 10px "WNMono", ui-monospace, Menlo, monospace; padding: 3px 7px; background: #f2f4f6; color: #16181a; border-radius: 4px; }
+.dv-tname { font: 500 13px/1.2 "Helvetica Neue", Helvetica, Arial, sans-serif; color: rgba(255,255,255,.72); }
+.dv-opts { display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start; }
+.dv-opt { flex: none; display: flex; flex-direction: column; gap: 11px; scroll-margin-top: 16px; }
+.dv-oid { font: 600 10.5px "WNMono", ui-monospace, Menlo, monospace; padding: 3px 7px; background: rgba(255,255,255,.12); color: #f2f4f6; border-radius: 5px; }
+.dv-olabel { display: flex; align-items: baseline; gap: 9px; max-width: 1160px; font: 400 11.5px/1.45 "Helvetica Neue", Helvetica, Arial, sans-serif; color: rgba(255,255,255,.5); }
+.dv-olabel b { font-weight: 500; color: rgba(255,255,255,.88); }
+.dv-card { max-width: 100%; overflow: hidden; border-radius: 14px; box-shadow: 0 24px 70px -30px rgba(0,0,0,.9); }
+.dv-opt:target .dv-oid { background: #f2f4f6; color: #16181a; }
+.dv-next { margin: 26px 0 0; font: 12px/1.6 "Helvetica Neue", Helvetica, Arial, sans-serif; color: rgba(255,255,255,.42); }
+.dv-sub { margin: 0 0 18px; max-width: 900px; font: 400 12.5px/1.6 "Helvetica Neue", Helvetica, Arial, sans-serif; color: rgba(255,255,255,.45); }
+@keyframes fz-rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes fz-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fz-arc { from { stroke-dashoffset: 327; } }
+@keyframes fz-bar { from { transform: scaleX(0); } }
+@keyframes fz-sweep { 0% { transform: translateX(-120%); } 100% { transform: translateX(320%); } }
+@keyframes fz-orbit { to { transform: rotate(360deg); } }
+@keyframes fz-breathe { 0%,100% { opacity: .35; } 50% { opacity: 1; } }
+@keyframes fz-slidein { from { opacity: 0; transform: translateX(28px); } to { opacity: 1; transform: none; } }
+</style>
+</helmet>
+
+<section class="dv-turn" id="t1">
+  <div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">Tre direzioni · grafite neutra, vetro, molta aria</span></div>
+  <p class="dv-sub">Tre modi diversi di rispondere alla stessa richiesta. Cambiano il modello mentale, non solo la pelle: <a class="dv-oid" href="#1a">1a</a> è una sala di proiezione, <a class="dv-oid" href="#1b">1b</a> è una griglia svizzera che tratta la libreria come un archivio, <a class="dv-oid" href="#1c">1c</a> è un motore che mostra il proprio ragionamento. Tutte e tre: grafite neutra, un solo grigio-vetro, tipografia bianca, zero cromature, zero ciano.</p>
+
+  <div class="dv-opts">
+
+    <div class="dv-opt" id="1a">
+      <div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a><span><b>SALA.</b> La locandina è la pagina. Un titolo alla volta a tutta altezza, i metadati galleggiano su vetro, l'affinità è una barra sottile che si traccia. Sfogli con la rotellina come un carosello di poster: la libreria è un nastro in basso, non una griglia. Ripensa il flusso: prima decidi <em>stasera</em>, poi eventualmente esplori.</span></div>
+      <div class="dv-card" style="width: 1160px;">
+
+        <div style="position: relative; width: 1160px; height: 725px; overflow: hidden; background: #0e1012; color: #f2f4f6; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+
+          <div style="position: absolute; inset: 0; background: radial-gradient(120% 90% at 78% 15%, #23272b, #0e1012 62%);"></div>
+          <div style="position: absolute; inset: 0; background: linear-gradient(90deg, #0e1012 0%, rgba(14,16,18,.92) 34%, rgba(14,16,18,0) 62%);"></div>
+
+          <div style="position: absolute; right: 0; top: 0; bottom: 0; width: 620px; background-color: #1b1f22; background-image: repeating-linear-gradient(122deg, rgba(255,255,255,.028) 0 10px, rgba(255,255,255,0) 10px 20px); animation: fz-fade 900ms ease both;">
+            <div style="position: absolute; inset: 0; background: linear-gradient(270deg, rgba(14,16,18,0), rgba(14,16,18,.55) 62%, #0e1012);"></div>
+            <span style="position: absolute; right: 26px; bottom: 24px; font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .22em; color: rgba(242,244,246,.3);">FOTOGRAMMA · 2:3 · 1240×1860</span>
+          </div>
+
+          <header style="position: absolute; left: 0; right: 0; top: 0; z-index: 5; display: flex; align-items: center; gap: 32px; padding: 26px 40px;">
+            <div style="display: flex; align-items: center; gap: 11px; flex: none;">
+              <span style="position: relative; width: 17px; height: 17px; display: block;" aria-hidden="true">
+                <span style="position: absolute; inset: 0; border-radius: 50%; background: #f2f4f6;"></span>
+                <span style="position: absolute; inset: 5px; border-radius: 50%; background: #0e1012;"></span>
+              </span>
+              <span style="font-size: 14px; font-weight: 500; letter-spacing: .34em; color: #f2f4f6;">FOSFORO</span>
+            </div>
+            <nav style="display: flex; align-items: center; gap: 26px; flex: none;">
+              <a href="#1a" style="font-size: 12px; font-weight: 500; letter-spacing: .02em; color: #f2f4f6;">Stasera</a>
+              <a href="#1a" style="font-size: 12px; font-weight: 400; letter-spacing: .02em; color: rgba(242,244,246,.42);" style-hover="color: #f2f4f6;">Libreria</a>
+              <a href="#1a" style="font-size: 12px; font-weight: 400; letter-spacing: .02em; color: rgba(242,244,246,.42);" style-hover="color: #f2f4f6;">Diario</a>
+            </nav>
+            <div style="margin-left: auto; display: flex; align-items: center; gap: 12px; flex: none;">
+              <span style="display: flex; align-items: center; gap: 7px; padding: 7px 12px; border-radius: 100px; background: rgba(242,244,246,.06); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);">
+                <span style="width: 5px; height: 5px; border-radius: 50%; background: #f2f4f6; animation: fz-breathe 3s ease-in-out infinite;"></span>
+                <span style="font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .16em; color: rgba(242,244,246,.72);">37 TITOLI</span>
+              </span>
+              <span style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #f2f4f6; color: #0e1012; font-size: 12px; font-weight: 500;">M</span>
+            </div>
+          </header>
+
+          <div style="position: absolute; left: 40px; top: 128px; width: 520px; z-index: 4;">
+            <p style="margin: 0; display: flex; align-items: center; gap: 11px; animation: fz-rise 620ms cubic-bezier(.16,.84,.28,1) 80ms both;">
+              <span style="font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .26em; color: rgba(242,244,246,.42);">STASERA</span>
+              <span style="flex: 1; height: 1px; background: linear-gradient(90deg, rgba(242,244,246,.3), transparent);"></span>
+            </p>
+            <h1 style="margin: 20px 0 0; font-size: 76px; line-height: .96; font-weight: 500; letter-spacing: -.036em; color: #fff; text-wrap: balance; animation: fz-rise 700ms cubic-bezier(.16,.84,.28,1) 160ms both;">Il Conformista</h1>
+            <div style="margin-top: 22px; display: flex; align-items: center; gap: 14px; font-size: 12.5px; color: rgba(242,244,246,.55); animation: fz-rise 700ms cubic-bezier(.16,.84,.28,1) 260ms both;">
+              <span>1970</span><span style="width: 3px; height: 3px; border-radius: 50%; background: rgba(242,244,246,.28);"></span>
+              <span>Drammatico</span><span style="width: 3px; height: 3px; border-radius: 50%; background: rgba(242,244,246,.28);"></span>
+              <span>113 min</span><span style="width: 3px; height: 3px; border-radius: 50%; background: rgba(242,244,246,.28);"></span>
+              <span style="padding: 2px 7px; border-radius: 4px; border: 1px solid rgba(242,244,246,.2);">VM14</span>
+            </div>
+
+            <div style="margin-top: 30px; padding: 22px 24px; border-radius: 12px; border: 1px solid rgba(242,244,246,.1); background: rgba(242,244,246,.045); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); animation: fz-rise 760ms cubic-bezier(.16,.84,.28,1) 340ms both;">
+              <div style="display: flex; align-items: baseline; gap: 12px;">
+                <span style="font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .26em; color: rgba(242,244,246,.42);">AFFINITÀ</span>
+                <span style="margin-left: auto; font-size: 34px; font-weight: 400; letter-spacing: -.03em; color: #fff; font-variant-numeric: tabular-nums;">86</span>
+                <span style="font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .16em; color: rgba(242,244,246,.35);">/100</span>
+              </div>
+              <span style="display: block; margin-top: 12px; height: 2px; border-radius: 2px; background: rgba(242,244,246,.12); overflow: hidden;">
+                <i style="display: block; height: 100%; width: 86%; background: #f2f4f6; transform-origin: left; animation: fz-bar 900ms cubic-bezier(.16,.84,.28,1) 700ms both;"></i>
+              </span>
+              <p style="margin: 18px 0 0; font-size: 14.5px; line-height: 1.62; color: rgba(242,244,246,.76); text-wrap: pretty;">Hai amato <b style="font-weight: 500; color: #fff;">Il Divo</b> e <b style="font-weight: 500; color: #fff;">Salò</b>. In libreria ci sono cinque italiani degli anni Settanta con lo stesso impianto politico: Bertolucci lavora la stessa materia, con una fotografia che ti riguarda.</p>
+              <div style="margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px;">
+                <span style="padding: 5px 10px; border-radius: 100px; background: rgba(242,244,246,.08); font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .12em; color: rgba(242,244,246,.62);">CINEMA ITALIANO +34</span>
+                <span style="padding: 5px 10px; border-radius: 100px; background: rgba(242,244,246,.08); font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .12em; color: rgba(242,244,246,.62);">POLITICA +21</span>
+                <span style="padding: 5px 10px; border-radius: 100px; background: rgba(242,244,246,.08); font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .12em; color: rgba(242,244,246,.62);">ANNI 70 +12</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 22px; display: flex; flex-wrap: wrap; gap: 10px; animation: fz-rise 760ms cubic-bezier(.16,.84,.28,1) 420ms both;">
+              <button style="display: inline-flex; align-items: center; gap: 9px; padding: 14px 24px; border-radius: 100px; border: 0; background: #f2f4f6; color: #0e1012; font-family: inherit; font-size: 12.5px; font-weight: 500; letter-spacing: .01em; cursor: pointer;" style-hover="background: #fff; transform: translateY(-1px);">
+                <span style="width: 0; height: 0; border-left: 7px solid currentColor; border-top: 5px solid transparent; border-bottom: 5px solid transparent;"></span>Guarda il trailer</button>
+              <button style="padding: 14px 22px; border-radius: 100px; border: 1px solid rgba(242,244,246,.18); background: rgba(242,244,246,.04); color: #f2f4f6; font-family: inherit; font-size: 12.5px; font-weight: 400; cursor: pointer;" style-hover="border-color: rgba(242,244,246,.45);">Salva per stasera</button>
+              <button style="padding: 14px 18px; border-radius: 100px; border: 1px solid transparent; background: transparent; color: rgba(242,244,246,.45); font-family: inherit; font-size: 12.5px; font-weight: 400; cursor: pointer;" style-hover="color: #f2f4f6;">Non mi interessa</button>
+            </div>
+          </div>
+
+          <div style="position: absolute; right: 40px; top: 138px; z-index: 6; display: flex; flex-direction: column; gap: 9px; align-items: center;">
+            <span style="font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .2em; color: rgba(242,244,246,.5); font-variant-numeric: tabular-nums;">01</span>
+            <span style="width: 1px; height: 22px; background: #f2f4f6;"></span>
+            <span style="width: 1px; height: 22px; background: rgba(242,244,246,.16);"></span>
+            <span style="width: 1px; height: 22px; background: rgba(242,244,246,.16);"></span>
+            <span style="width: 1px; height: 22px; background: rgba(242,244,246,.16);"></span>
+            <span style="width: 1px; height: 22px; background: rgba(242,244,246,.16);"></span>
+            <span style="font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .2em; color: rgba(242,244,246,.28); font-variant-numeric: tabular-nums;">06</span>
+          </div>
+
+          <div style="position: absolute; left: 0; right: 0; bottom: 0; z-index: 5; padding: 20px 40px 24px; background: linear-gradient(transparent, rgba(14,16,18,.86) 42%, #0e1012);">
+            <div style="display: flex; align-items: baseline; gap: 12px; margin-bottom: 14px;">
+              <span style="font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .26em; color: rgba(242,244,246,.42);">ALTRE CINQUE PROPOSTE</span>
+              <span style="flex: 1; height: 1px; background: rgba(242,244,246,.1);"></span>
+              <a href="#1a" style="font-size: 11.5px; color: rgba(242,244,246,.55);" style-hover="color: #f2f4f6;">Rigenera</a>
+            </div>
+            <div style="display: flex; gap: 14px;">
+              <sc-for list="{{ strip }}" as="s" hint-placeholder-count="5">
+                <button style="flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(242,244,246,.08); background: rgba(242,244,246,.035); cursor: pointer; text-align: left; font-family: inherit; animation: fz-rise 600ms cubic-bezier(.16,.84,.28,1) both; animation-delay: {{ s.delay }};" style-hover="border-color: rgba(242,244,246,.3); background: rgba(242,244,246,.07); transform: translateY(-3px);">
+                  <span style="flex: none; width: 34px; height: 51px; border-radius: 4px; background-color: #23272b; background-image: repeating-linear-gradient(122deg, rgba(255,255,255,.05) 0 6px, rgba(255,255,255,0) 6px 12px);"></span>
+                  <span style="min-width: 0; display: flex; flex-direction: column; gap: 4px;">
+                    <span style="font-size: 12px; font-weight: 500; color: #f2f4f6; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ s.title }}</span>
+                    <span style="display: flex; align-items: center; gap: 7px;">
+                      <span style="font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; color: rgba(242,244,246,.72); font-variant-numeric: tabular-nums;">{{ s.match }}</span>
+                      <span style="width: 34px; height: 2px; border-radius: 2px; background: rgba(242,244,246,.14); overflow: hidden;"><i style="display: block; height: 100%; width: {{ s.pct }}; background: rgba(242,244,246,.7);"></i></span>
+                    </span>
+                  </span>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dv-opt" id="1b">
+      <div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a><span><b>ARCHIVIO.</b> Griglia svizzera rigorosa, niente riquadri: solo tipografia, filetti e aria. La locandina resta grande ma in proporzione 3:4 dentro un ritmo di colonne; l'affinità è un numero grande accanto al titolo, non un cerchio. Ripensa la gerarchia: una sola pagina scrollabile che passa da «stasera» a «archivio» senza sezioni ripetute.</span></div>
+      <div class="dv-card" style="width: 1160px;">
+        <div style="width: 1160px; height: 725px; overflow: hidden; background: #f4f5f6; color: #16181a; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+
+          <header style="display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 24px; padding: 30px 44px 18px; border-bottom: 1px solid #16181a;">
+            <div style="display: flex; align-items: baseline; gap: 20px;">
+              <span style="font-size: 15px; font-weight: 700; letter-spacing: -.01em; color: #16181a;">Fosforo</span>
+              <nav style="display: flex; align-items: baseline; gap: 18px;">
+                <a href="#1b" style="font-size: 12px; font-weight: 500; color: #16181a; border-bottom: 2px solid #16181a; padding-bottom: 2px;">Stasera</a>
+                <a href="#1b" style="font-size: 12px; font-weight: 400; color: rgba(22,24,26,.45);" style-hover="color: #16181a;">Archivio</a>
+                <a href="#1b" style="font-size: 12px; font-weight: 400; color: rgba(22,24,26,.45);" style-hover="color: #16181a;">Diario</a>
+                <a href="#1b" style="font-size: 12px; font-weight: 400; color: rgba(22,24,26,.45);" style-hover="color: #16181a;">Impostazioni</a>
+              </nav>
+            </div>
+            <div style="display: flex; align-items: end; gap: 26px;">
+              <div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-family: 'WNMono', ui-monospace, monospace; font-size: 8.5px; letter-spacing: .2em; color: rgba(22,24,26,.4);">TITOLI</span><span style="font-size: 15px; font-weight: 500; font-variant-numeric: tabular-nums;">37</span></div>
+              <div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-family: 'WNMono', ui-monospace, monospace; font-size: 8.5px; letter-spacing: .2em; color: rgba(22,24,26,.4);">DA CONFERMARE</span><span style="font-size: 15px; font-weight: 500; font-variant-numeric: tabular-nums;">02</span></div>
+              <div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-family: 'WNMono', ui-monospace, monospace; font-size: 8.5px; letter-spacing: .2em; color: rgba(22,24,26,.4);">SYNC</span><span style="font-size: 15px; font-weight: 500; font-variant-numeric: tabular-nums;">21:04</span></div>
+              <span style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #16181a; color: #f4f5f6; font-size: 11.5px; font-weight: 500;">M</span>
+            </div>
+          </header>
+
+          <div style="display: grid; grid-template-columns: 388px minmax(0,1fr); gap: 44px; padding: 34px 44px 0;">
+            <div style="animation: fz-rise 700ms cubic-bezier(.16,.84,.28,1) 80ms both;">
+              <div style="position: relative; width: 388px; aspect-ratio: 3/4; background-color: #dcdfe2; background-image: repeating-linear-gradient(122deg, rgba(22,24,26,.05) 0 10px, rgba(22,24,26,0) 10px 20px); overflow: hidden;">
+                <div style="position: absolute; inset: 0; overflow: hidden; pointer-events: none;"><i style="position: absolute; top: 0; bottom: 0; width: 32%; background: linear-gradient(90deg, transparent, rgba(255,255,255,.5), transparent); animation: fz-sweep 2.6s cubic-bezier(.3,0,.4,1) 500ms;"></i></div>
+                <span style="position: absolute; left: 16px; bottom: 14px; font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .2em; color: rgba(22,24,26,.42);">LOCANDINA · 3:4</span>
+              </div>
+              <div style="margin-top: 14px; display: flex; gap: 8px;">
+                <button style="flex: 1; padding: 13px 16px; border: 0; background: #16181a; color: #f4f5f6; font-family: inherit; font-size: 12px; font-weight: 500; cursor: pointer;" style-hover="background: #000;">Salva per stasera</button>
+                <button style="padding: 13px 16px; border: 1px solid #16181a; background: transparent; color: #16181a; font-family: inherit; font-size: 12px; font-weight: 400; cursor: pointer;" style-hover="background: #16181a; color: #f4f5f6;">Trailer</button>
+                <button style="padding: 13px 16px; border: 1px solid rgba(22,24,26,.2); background: transparent; color: rgba(22,24,26,.5); font-family: inherit; font-size: 12px; font-weight: 400; cursor: pointer;" style-hover="border-color: #16181a; color: #16181a;">Scarta</button>
+              </div>
+            </div>
+
+            <div style="min-width: 0; display: flex; flex-direction: column;">
+              <p style="margin: 0; font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .26em; color: rgba(22,24,26,.45); animation: fz-rise 620ms cubic-bezier(.16,.84,.28,1) 120ms both;">CONSIGLIO PRINCIPALE — 07 SET 2026</p>
+              <div style="margin-top: 16px; display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 28px; align-items: start; border-bottom: 1px solid rgba(22,24,26,.14); padding-bottom: 22px; animation: fz-rise 700ms cubic-bezier(.16,.84,.28,1) 200ms both;">
+                <div style="min-width: 0;">
+                  <h1 style="margin: 0; font-size: 58px; line-height: .94; font-weight: 500; letter-spacing: -.038em; text-wrap: balance;">Il Conformista</h1>
+                  <p style="margin: 14px 0 0; font-size: 13px; color: rgba(22,24,26,.55);">Bernardo Bertolucci · 1970 · Drammatico · 113 min · VM14</p>
+                </div>
+                <div style="flex: none; text-align: right;">
+                  <div style="font-size: 68px; line-height: .84; font-weight: 400; letter-spacing: -.05em; font-variant-numeric: tabular-nums;">86</div>
+                  <div style="margin-top: 6px; font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .2em; color: rgba(22,24,26,.45);">AFFINITÀ / 100</div>
+                </div>
+              </div>
+
+              <p style="margin: 22px 0 0; max-width: 56ch; font-size: 16px; line-height: 1.6; color: rgba(22,24,26,.82); text-wrap: pretty; animation: fz-rise 700ms cubic-bezier(.16,.84,.28,1) 280ms both;">Hai amato <b style="font-weight: 600;">Il Divo</b> e <b style="font-weight: 600;">Salò</b>. In libreria ci sono cinque italiani degli anni Settanta con lo stesso impianto politico: Bertolucci lavora la stessa materia, con una fotografia che ti riguarda.</p>
+
+              <div style="margin-top: 26px; display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 26px; animation: fz-rise 700ms cubic-bezier(.16,.84,.28,1) 360ms both;">
+                <sc-for list="{{ signals }}" as="g" hint-placeholder-count="3">
+                  <div style="min-width: 0;">
+                    <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 8px;">
+                      <span style="font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .16em; color: rgba(22,24,26,.5); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ g.label }}</span>
+                      <span style="font-size: 13px; font-weight: 500; font-variant-numeric: tabular-nums;">{{ g.w }}</span>
+                    </div>
+                    <span style="display: block; margin-top: 7px; height: 3px; background: rgba(22,24,26,.12); overflow: hidden;"><i style="display: block; height: 100%; width: {{ g.pct }}; background: #16181a; transform-origin: left; animation: fz-bar 800ms cubic-bezier(.16,.84,.28,1) 620ms both;"></i></span>
+                  </div>
+                </sc-for>
+              </div>
+
+              <div style="margin-top: auto; padding-top: 30px;">
+                <div style="display: flex; align-items: baseline; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid rgba(22,24,26,.14);">
+                  <span style="font-size: 12px; font-weight: 500;">Archivio</span>
+                  <span style="font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .2em; color: rgba(22,24,26,.4); font-variant-numeric: tabular-nums;">37 TITOLI</span>
+                  <a href="#1b" style="margin-left: auto; font-size: 11.5px; color: rgba(22,24,26,.5);" style-hover="color: #16181a;">Vedi tutto →</a>
+                </div>
+                <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(6, minmax(0,1fr)); gap: 16px;">
+                  <sc-for list="{{ archive }}" as="a" hint-placeholder-count="6">
+                    <button style="min-width: 0; padding: 0; border: 0; background: transparent; cursor: pointer; text-align: left; font-family: inherit; animation: fz-rise 600ms cubic-bezier(.16,.84,.28,1) both; animation-delay: {{ a.delay }};" style-hover="opacity: .72;">
+                      <span style="display: block; width: 100%; aspect-ratio: 3/4; background-color: #dcdfe2; background-image: repeating-linear-gradient(122deg, rgba(22,24,26,.05) 0 7px, rgba(22,24,26,0) 7px 14px);"></span>
+                      <span style="display: block; margin-top: 8px; font-size: 11.5px; font-weight: 500; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ a.title }}</span>
+                      <span style="display: block; margin-top: 2px; font-family: 'WNMono', ui-monospace, monospace; font-size: 8.5px; letter-spacing: .12em; color: rgba(22,24,26,.42);">{{ a.meta }}</span>
+                    </button>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dv-opt" id="1c">
+      <div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a><span><b>MOTORE.</b> Fosforo mostra il proprio ragionamento: la colonna sinistra è il flusso di deduzione di Claude, che scorre e si compone; a destra la proposta. Vetro su grafite, un anello di affinità sottilissimo, movimento come sostanza (l'anello si traccia, le righe entrano una a una). Ripensa il prodotto: da vetrina a strumento che si spiega.</span></div>
+      <div class="dv-card" style="width: 1160px;">
+        <div style="position: relative; width: 1160px; height: 725px; overflow: hidden; background: #131517; color: #eef0f2; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+
+          <div style="position: absolute; inset: 0; background: radial-gradient(90% 70% at 50% -10%, #262a2e, #131517 65%);"></div>
+          <div style="position: absolute; inset: 0; opacity: .5; background: repeating-linear-gradient(to bottom, rgba(255,255,255,.012) 0 1px, transparent 1px 3px);"></div>
+
+          <header style="position: relative; z-index: 2; display: flex; align-items: center; gap: 30px; padding: 24px 36px; border-bottom: 1px solid rgba(238,240,242,.08);">
+            <div style="display: flex; align-items: center; gap: 12px; flex: none;">
+              <span style="position: relative; width: 22px; height: 22px; display: block;" aria-hidden="true">
+                <span style="position: absolute; inset: -3px; border-radius: 50%; border: 1px dashed rgba(238,240,242,.22); animation: fz-orbit 18s linear infinite;"></span>
+                <span style="position: absolute; inset: 3px; border-radius: 50%; background: #eef0f2;"></span>
+              </span>
+              <span style="font-size: 13.5px; font-weight: 500; letter-spacing: .3em;">FOSFORO</span>
+            </div>
+            <nav style="display: flex; align-items: center; gap: 4px; flex: none;">
+              <a href="#1c" style="padding: 8px 14px; border-radius: 100px; background: rgba(238,240,242,.1); font-size: 11.5px; font-weight: 500; color: #fff;">Motore</a>
+              <a href="#1c" style="padding: 8px 14px; border-radius: 100px; font-size: 11.5px; font-weight: 400; color: rgba(238,240,242,.45);" style-hover="color: #fff; background: rgba(238,240,242,.06);">Libreria</a>
+              <a href="#1c" style="padding: 8px 14px; border-radius: 100px; font-size: 11.5px; font-weight: 400; color: rgba(238,240,242,.45);" style-hover="color: #fff; background: rgba(238,240,242,.06);">Diario</a>
+              <a href="#1c" style="padding: 8px 14px; border-radius: 100px; font-size: 11.5px; font-weight: 400; color: rgba(238,240,242,.45);" style-hover="color: #fff; background: rgba(238,240,242,.06);">Impostazioni</a>
+            </nav>
+            <div style="margin-left: auto; display: flex; align-items: center; gap: 14px; flex: none;">
+              <span style="display: flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 100px; border: 1px solid rgba(238,240,242,.12); background: rgba(238,240,242,.04);">
+                <span style="width: 5px; height: 5px; border-radius: 50%; background: #eef0f2; animation: fz-breathe 1.4s ease-in-out infinite;"></span>
+                <span style="font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .18em; color: rgba(238,240,242,.7);">STO PENSANDO</span>
+              </span>
+              <span style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #eef0f2; color: #131517; font-size: 12px; font-weight: 500;">M</span>
+            </div>
+          </header>
+
+          <div style="position: relative; z-index: 2; display: grid; grid-template-columns: 372px minmax(0,1fr); height: 649px;">
+
+            <aside style="padding: 28px 30px; border-right: 1px solid rgba(238,240,242,.08); display: flex; flex-direction: column; min-width: 0;">
+              <p style="margin: 0; font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .26em; color: rgba(238,240,242,.4);">RAGIONAMENTO · 37 TITOLI LETTI</p>
+              <div style="margin-top: 22px; display: flex; flex-direction: column; gap: 0; min-width: 0;">
+                <sc-for list="{{ thoughts }}" as="th" hint-placeholder-count="5">
+                  <div style="display: grid; grid-template-columns: 22px minmax(0,1fr); gap: 14px; padding-bottom: 22px; animation: fz-slidein 620ms cubic-bezier(.16,.84,.28,1) both; animation-delay: {{ th.delay }};">
+                    <span style="display: flex; flex-direction: column; align-items: center; gap: 6px;">
+                      <span style="width: 7px; height: 7px; border-radius: 50%; background: {{ th.dot }}; margin-top: 4px;"></span>
+                      <span style="flex: 1; width: 1px; background: rgba(238,240,242,.12);"></span>
+                    </span>
+                    <span style="min-width: 0;">
+                      <span style="display: block; font-family: 'WNMono', ui-monospace, monospace; font-size: 8.5px; letter-spacing: .2em; color: rgba(238,240,242,.38);">{{ th.step }}</span>
+                      <span style="display: block; margin-top: 6px; font-size: 13px; line-height: 1.55; color: {{ th.ink }}; text-wrap: pretty;">{{ th.text }}</span>
+                    </span>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="margin-top: auto; padding: 16px 18px; border-radius: 10px; border: 1px solid rgba(238,240,242,.1); background: rgba(238,240,242,.035);">
+                <p style="margin: 0; font-family: 'WNMono', ui-monospace, monospace; font-size: 8.5px; letter-spacing: .2em; color: rgba(238,240,242,.38);">SCARTATI</p>
+                <p style="margin: 8px 0 0; font-size: 12.5px; line-height: 1.5; color: rgba(238,240,242,.62);">Quattro titoli già in libreria, due votati «non fa per me», uno senza sottotitoli italiani.</p>
+              </div>
+            </aside>
+
+            <div style="min-width: 0; padding: 28px 36px; display: grid; grid-template-columns: 232px minmax(0,1fr); gap: 30px; align-content: start;">
+
+              <div style="animation: fz-rise 700ms cubic-bezier(.16,.84,.28,1) 900ms both;">
+                <div style="position: relative; width: 232px; aspect-ratio: 2/3; border-radius: 10px; overflow: hidden; background-color: #262a2e; background-image: repeating-linear-gradient(122deg, rgba(255,255,255,.035) 0 9px, rgba(255,255,255,0) 9px 18px);">
+                  <span style="position: absolute; left: 14px; bottom: 12px; font-family: 'WNMono', ui-monospace, monospace; font-size: 8.5px; letter-spacing: .2em; color: rgba(238,240,242,.34);">COVER 2:3</span>
+                </div>
+                <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 8px;">
+                  <button style="padding: 13px 16px; border-radius: 100px; border: 0; background: #eef0f2; color: #131517; font-family: inherit; font-size: 12px; font-weight: 500; cursor: pointer;" style-hover="background: #fff;">Salva per stasera</button>
+                  <button style="padding: 13px 16px; border-radius: 100px; border: 1px solid rgba(238,240,242,.16); background: transparent; color: #eef0f2; font-family: inherit; font-size: 12px; font-weight: 400; cursor: pointer;" style-hover="border-color: rgba(238,240,242,.45);">Guarda il trailer</button>
+                </div>
+              </div>
+
+              <div style="min-width: 0;">
+                <div style="display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 26px; align-items: start;">
+                  <div style="min-width: 0; animation: fz-rise 700ms cubic-bezier(.16,.84,.28,1) 980ms both;">
+                    <p style="margin: 0; font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .26em; color: rgba(238,240,242,.4);">CONCLUSIONE</p>
+                    <h1 style="margin: 14px 0 0; font-size: 46px; line-height: .98; font-weight: 500; letter-spacing: -.032em; color: #fff; text-wrap: balance;">Il Conformista</h1>
+                    <p style="margin: 12px 0 0; font-size: 12.5px; color: rgba(238,240,242,.5);">Bernardo Bertolucci · 1970 · Drammatico · 113 min</p>
+                    <p style="margin: 20px 0 0; max-width: 52ch; font-size: 14.5px; line-height: 1.62; color: rgba(238,240,242,.78); text-wrap: pretty;">Lo stesso impianto politico che hai votato «amato» tre volte, ma con una regia sulla forma invece che sul fatto. È il salto più corto che puoi fare da qui.</p>
+                  </div>
+
+                  <div style="flex: none; position: relative; width: 124px; height: 124px; animation: fz-fade 600ms ease 900ms both;">
+                    <svg viewBox="0 0 120 120" style="position: absolute; inset: 0; transform: rotate(-90deg);" aria-hidden="true">
+                      <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(238,240,242,.1)" stroke-width="1"></circle>
+                      <circle cx="60" cy="60" r="52" fill="none" stroke="#eef0f2" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="45.7" style="animation: fz-arc 1400ms cubic-bezier(.16,.84,.28,1) 1000ms both;"></circle>
+                    </svg>
+                    <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;">
+                      <span style="font-size: 36px; font-weight: 400; letter-spacing: -.04em; color: #fff; font-variant-numeric: tabular-nums;">86</span>
+                      <span style="font-family: 'WNMono', ui-monospace, monospace; font-size: 8px; letter-spacing: .2em; color: rgba(238,240,242,.4);">AFFINITÀ</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="margin-top: 30px; padding-top: 22px; border-top: 1px solid rgba(238,240,242,.08); animation: fz-rise 700ms cubic-bezier(.16,.84,.28,1) 1080ms both;">
+                  <div style="display: flex; align-items: baseline; gap: 12px;">
+                    <span style="font-family: 'WNMono', ui-monospace, monospace; font-size: 9px; letter-spacing: .26em; color: rgba(238,240,242,.4);">ALTERNATIVE VALUTATE</span>
+                    <span style="flex: 1; height: 1px; background: rgba(238,240,242,.08);"></span>
+                  </div>
+                  <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 2px;">
+                    <sc-for list="{{ alts }}" as="al" hint-placeholder-count="4">
+                      <button style="display: grid; grid-template-columns: 34px minmax(0,1fr) 78px 46px; gap: 16px; align-items: center; padding: 11px 12px; border-radius: 8px; border: 1px solid transparent; background: transparent; cursor: pointer; text-align: left; font-family: inherit; animation: fz-slidein 560ms cubic-bezier(.16,.84,.28,1) both; animation-delay: {{ al.delay }};" style-hover="background: rgba(238,240,242,.05); border-color: rgba(238,240,242,.1);">
+                        <span style="width: 34px; height: 51px; border-radius: 3px; background-color: #262a2e; background-image: repeating-linear-gradient(122deg, rgba(255,255,255,.05) 0 6px, rgba(255,255,255,0) 6px 12px);"></span>
+                        <span style="min-width: 0; display: flex; flex-direction: column; gap: 3px;">
+                          <span style="font-size: 12.5px; font-weight: 500; color: #eef0f2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ al.title }}</span>
+                          <span style="font-size: 11px; color: rgba(238,240,242,.42); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ al.note }}</span>
+                        </span>
+                        <span style="height: 2px; border-radius: 2px; background: rgba(238,240,242,.12); overflow: hidden;"><i style="display: block; height: 100%; width: {{ al.pct }}; background: rgba(238,240,242,.62);"></i></span>
+                        <span style="text-align: right; font-size: 14px; font-weight: 400; color: rgba(238,240,242,.72); font-variant-numeric: tabular-nums;">{{ al.match }}</span>
+                      </button>
+                    </sc-for>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="dv-next">Prova: «porta avanti <a class="dv-oid" href="#1a">1a</a> e fammi vedere overlay, impostazioni e marchio» · «<a class="dv-oid" href="#1b">1b</a> ma in versione notte» · «unisci il ragionamento di <a class="dv-oid" href="#1c">1c</a> nella hero di <a class="dv-oid" href="#1a">1a</a>»</p>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+class Component extends DCLogic {
+  renderVals() {
+    const strip = [
+      { title: "Le mani sulla città", match: 81, pct: "81%", delay: "560ms" },
+      { title: "Indagine su un cittadino", match: 78, pct: "78%", delay: "640ms" },
+      { title: "La classe operaia va in paradiso", match: 74, pct: "74%", delay: "720ms" },
+      { title: "Sacco e Vanzetti", match: 69, pct: "69%", delay: "800ms" },
+      { title: "Todo Modo", match: 58, pct: "58%", delay: "880ms" }
+    ];
+    const signals = [
+      { label: "CINEMA ITALIANO", w: "+34", pct: "100%" },
+      { label: "POLITICA / STORIA", w: "+21", pct: "62%" },
+      { label: "ANNI SETTANTA", w: "+12", pct: "35%" }
+    ];
+    const archive = [
+      { title: "Il Divo", meta: "2008 · AMATO", delay: "440ms" },
+      { title: "Salò", meta: "1975 · AMATO", delay: "500ms" },
+      { title: "L'Amica Geniale", meta: "SERIE · AMATO", delay: "560ms" },
+      { title: "Gomorra", meta: "SERIE · AMATO", delay: "620ms" },
+      { title: "La Grande Bellezza", meta: "2013 · AMATO", delay: "680ms" },
+      { title: "Romanzo Criminale", meta: "2005 · PIACIUTO", delay: "740ms" }
+    ];
+    const thoughts = [
+      { step: "01 · LETTURA", text: "Trentasette titoli, ventinove votati. Il campione è abbastanza grande per fidarsi dei voti invece dei generi.", dot: "#eef0f2", ink: "rgba(238,240,242,.86)", delay: "120ms" },
+      { step: "02 · SCHEMA", text: "Otto «amato» su dieci sono italiani, e sei su otto raccontano una struttura di potere. Non è un gusto di genere: è un gusto di soggetto.", dot: "#eef0f2", ink: "rgba(238,240,242,.86)", delay: "300ms" },
+      { step: "03 · TENSIONE", text: "I due «non fa per me» sono entrambi italiani e politici, ma girati come cronaca. Quindi conta la forma, non solo il tema.", dot: "rgba(238,240,242,.6)", ink: "rgba(238,240,242,.68)", delay: "480ms" },
+      { step: "04 · IPOTESI", text: "Cerco autori che trattino il potere come materia visiva, non come racconto giornalistico.", dot: "rgba(238,240,242,.6)", ink: "rgba(238,240,242,.68)", delay: "660ms" },
+      { step: "05 · SCELTA", text: "Undici candidati, sei proposte, una in testa con distacco.", dot: "#eef0f2", ink: "rgba(238,240,242,.86)", delay: "840ms" }
+    ];
+    const alts = [
+      { title: "Le mani sulla città", note: "Rosi · più cronaca, meno forma", match: 81, pct: "81%", delay: "1140ms" },
+      { title: "Indagine su un cittadino", note: "Petri · vicino, già in lista", match: 78, pct: "78%", delay: "1220ms" },
+      { title: "La classe operaia va in paradiso", note: "Petri · soggetto diverso", match: 74, pct: "74%", delay: "1300ms" },
+      { title: "Sacco e Vanzetti", note: "Montaldo · fuori dall'Italia", match: 69, pct: "69%", delay: "1380ms" }
+    ];
+    return { strip, signals, archive, thoughts, alts };
+  }
+}
+</script>
+</body>
+</html>
