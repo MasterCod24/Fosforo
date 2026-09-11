@@ -35,6 +35,20 @@ function empty() {
 let cache = null;
 const listeners = new Set();
 
+/* La dashboard e il service worker sono due mondi separati, ognuno con la sua
+   copia in memoria. Chi scrive per ultimo vince — e senza questo ascolto il
+   service worker restava con una copia vecchia e la riscriveva sopra a quel che
+   la dashboard aveva appena salvato: un titolo aggiunto a mano spariva un
+   istante dopo. Prima l'ascolto viveva dentro `watch()`, che il service worker
+   non chiama mai: ora si registra all'avvio, in tutti e due i mondi. */
+if (isExtension && api.storage.onChanged) {
+  api.storage.onChanged.addListener((changes, area) => {
+    if (area !== "local" || !changes[KEY]) return;
+    cache = changes[KEY].newValue || null;
+    listeners.forEach((fn) => { try { fn(cache); } catch (e) { console.error(e); } });
+  });
+}
+
 /** La libreria parte VUOTA. Sedici titoli che l'utente non ha mai messo sono
     indistinguibili da un errore: li legge come roba sua, e i primi consigli
     nascono da gusti di qualcun altro. Il seme resta solo per la dimostrazione
@@ -79,13 +93,6 @@ export const Store = {
   /** Si iscrive ai cambiamenti, anche a quelli fatti da un'altra pagina. */
   watch(fn) {
     listeners.add(fn);
-    if (isExtension && api.storage.onChanged) {
-      api.storage.onChanged.addListener((changes, area) => {
-        if (area !== "local" || !changes[KEY]) return;
-        cache = changes[KEY].newValue;
-        fn(cache);
-      });
-    }
     return () => listeners.delete(fn);
   },
 
@@ -116,6 +123,17 @@ export const Store = {
     s.declined = [...(s.declined || []), id];
     await commit();
   },
+
+  /** «Non mi interessa»: non è in libreria, quindi non c'è niente da togliere —
+      si segna soltanto che non va più riproposto, né qui né sulle pagine video. */
+  async decline(id) {
+    const s = await load();
+    if (!(s.declined || []).includes(id)) s.declined = [...(s.declined || []), id];
+    await commit();
+    return s.declined;
+  },
+
+  async declined() { return (await load()).declined || []; },
 
   async vote(id, state) {
     const s = await load();

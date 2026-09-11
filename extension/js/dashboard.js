@@ -5,6 +5,7 @@ import { Store } from "../lib/store.js";
 import { ask, isExtension } from "../lib/platform.js";
 import { proposteLocali } from "../lib/rank.js";
 import { idFor } from "../lib/title.js";
+import { ingrandita } from "../lib/poster.js";
 
 const $ = (sel, root) => (root || document).querySelector(sel);
 const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
@@ -90,7 +91,9 @@ function renderHero(i, animate) {
   /* La locandina è la superficie: se non ce n'è una, resta il pozzetto rigato. */
   const img = $("#hero-poster");
   const tex = $("#hero-poster-fallback");
-  if (f.poster) { img.src = f.poster; img.hidden = false; tex.hidden = true; }
+  /* Qui la locandina è larga 700px CSS — su retina 1400 pixel veri: si chiede la
+     taglia sopra a quella salvata, che nel muro della libreria basta e avanza. */
+  if (f.poster) { img.src = ingrandita(f.poster); img.hidden = false; tex.hidden = true; }
   else { img.removeAttribute("src"); img.hidden = true; tex.hidden = false; }
   replay($(".poster-panel"));
 
@@ -150,7 +153,10 @@ async function caricaProposte({ force = false } = {}) {
     esito = { items: proposteLocali(await Store.library()), source: "demo", error: null };
   }
 
-  proposte = (esito && esito.items) || [];
+  /* Quel che hai scartato resta scartato, anche se il modello lo ripropone
+     o se arriva dalla cache di ieri. */
+  const scartati = new Set(await Store.declined());
+  proposte = ((esito && esito.items) || []).filter((f) => !scartati.has(idFor(f.title, f.year)));
   nota.textContent = esito && esito.error ? esito.error
     : esito && esito.source === "demo" ? "modalità demo · consigli non generati"
     : "";
@@ -168,6 +174,51 @@ $("#strip").addEventListener("click", (e) => {
   if (card) renderHero(Number(card.dataset.index), true);
 });
 $("#rigenera").addEventListener("click", () => caricaProposte({ force: true }));
+
+/* ── I tre bottoni sotto la scheda ──
+   Erano tre bottoni disegnati e basta: si premevano e non succedeva niente.
+   Un bottone che non fa niente è peggio di un bottone che non c'è. */
+
+/* Non esiste un'API del trailer senza l'id TMDB del film, che qui non abbiamo:
+   si apre la ricerca, che è esattamente il gesto che faresti a mano. */
+$("#hero-trailer").addEventListener("click", () => {
+  const f = proposte[current];
+  if (!f) return;
+  const q = encodeURIComponent([f.title, f.year, "trailer italiano"].filter(Boolean).join(" "));
+  window.open("https://www.youtube.com/results?search_query=" + q, "_blank", "noopener");
+});
+
+/* «Salva per stasera» mette in lista: è la stessa cosa che fa «In lista» nel
+   modale, quindi passa dallo stesso posto e la Libreria se ne accorge da sola. */
+$("#hero-salva").addEventListener("click", async function () {
+  const f = proposte[current];
+  if (!f) return;
+  this.disabled = true;
+  await Store.remember({
+    id: idFor(f.title, f.year),
+    title: f.title, year: f.year, serie: false, state: "IN LISTA",
+    director: null, poster: f.poster || null, host: null, addedAt: Date.now()
+  });
+  await caricaLibreria();
+  flash(`«${f.title}» è in lista per stasera.`);
+  this.disabled = false;
+});
+
+/* «Non mi interessa» toglie la proposta e non la fa più tornare, né qui né
+   quando passi su una pagina che la trasmette. */
+$("#hero-scarta").addEventListener("click", async () => {
+  const f = proposte[current];
+  if (!f) return;
+  await Store.decline(idFor(f.title, f.year));
+  const titolo = f.title;
+  proposte.splice(current, 1);
+  if (!proposte.length) {
+    heroVuoto("Le hai scartate tutte. «Rigenera» ne chiede altre.");
+  } else {
+    renderHero(Math.min(current, proposte.length - 1), true);
+  }
+  flash(`«${titolo}» non te lo ripropongo.`);
+});
 
 /* ═══════════════════════════════ LIBRERIA ═══ */
 
@@ -325,9 +376,9 @@ async function confermaAdd() {
   const serie = segScelto("#add-kind").kind === "serie";
   const state = segScelto("#add-state").state || "IN LISTA";
 
+  const id = idFor(title, year);
   await Store.remember({
-    id: idFor(title, year),
-    title, year, serie, state,
+    id, title, year, serie, state,
     director: null, poster: null, host: null,
     addedAt: Date.now()
   });
@@ -335,6 +386,15 @@ async function confermaAdd() {
   chiudiAdd();
   await caricaLibreria();
   flash(`«${title}» è in libreria.`);
+
+  /* La locandina arriva dopo: chiederla prima terrebbe il modale aperto su una
+     richiesta di rete. Se non si trova niente resta il pozzetto rigato, che è
+     esattamente quel che deve succedere — mai un riquadro rotto. */
+  const esito = await ask({ type: "poster", title, year, pagePoster: null });
+  if (esito && esito.url) {
+    await Store.remember({ id, poster: esito.url });
+    await caricaLibreria();
+  }
 }
 
 $("#add-confirm").addEventListener("click", confermaAdd);

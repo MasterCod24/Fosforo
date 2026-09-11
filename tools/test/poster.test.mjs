@@ -2,7 +2,7 @@
 
 import { test, beforeEach } from "node:test";
 import assert from "node:assert/strict";
-import { posterFor, endpoints } from "../../extension/lib/poster.js";
+import { posterFor, endpoints, ingrandita } from "../../extension/lib/poster.js";
 import { Store } from "../../extension/lib/store.js";
 
 let chiamate = [];
@@ -88,4 +88,31 @@ test("un'immagine che non è un indirizzo valido viene scartata", async () => {
   const url = await posterFor({ title: "Dogman", year: "2018", pagePoster: "javascript:alert(1)" },
     { posterSource: "site", tmdbKey: "" });
   assert.equal(url, null);
+});
+
+/* ── La taglia delle locandine ──
+   A w500 la locandina di Stasera — 700px CSS, 1400 veri su retina — veniva
+   ingrandita quasi del triplo, e si vedeva. */
+
+test("le locandine si chiedono a w780, non a w500", () => {
+  assert.ok(endpoints.images.endsWith("/w780"), endpoints.images);
+});
+
+test("su Stasera si sale di una taglia, senza una seconda richiesta", () => {
+  assert.equal(
+    ingrandita("https://image.tmdb.org/t/p/w780/abc.jpg"),
+    "https://image.tmdb.org/t/p/w1280/abc.jpg"
+  );
+  // Quel che non viene da TMDB si lascia esattamente com'è.
+  assert.equal(ingrandita("https://sito.it/loc.jpg"), "https://sito.it/loc.jpg");
+  assert.equal(ingrandita(null), null);
+});
+
+test("una locandina vecchia salvata a w500 sale di taglia da sola", async () => {
+  await Store.wipe();
+  await Store.rememberPoster("vecchia|1970", "https://image.tmdb.org/t/p/w500/x.jpg");
+  chiamate = [];
+  const url = await posterFor({ title: "vecchia", year: "1970" }, { posterSource: "tmdb", tmdbKey: "k" });
+  assert.equal(url, "https://image.tmdb.org/t/p/w780/x.jpg");
+  assert.equal(chiamate.length, 0, "non deve chiedere di nuovo a TMDB");
 });

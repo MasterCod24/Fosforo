@@ -9,8 +9,17 @@ import { idFor } from "./title.js";
 /* Indirizzi in chiaro: i test locali li puntano altrove, in produzione restano questi. */
 export const endpoints = {
   tmdb: "https://api.themoviedb.org/3",
-  images: "https://image.tmdb.org/t/p/w500"
+  /* w780, non w500: la locandina di Stasera è larga 700px CSS, che su uno schermo
+     retina sono 1400 pixel veri. A w500 l'immagine veniva ingrandita del triplo e
+     si vedeva. Nel muro della libreria (119px) è sovrabbondante, ma è la stessa
+     immagine già in cache e non costa una seconda richiesta. */
+  images: "https://image.tmdb.org/t/p/w780"
 };
+
+/** Su Stasera la locandina è enorme: lì si chiede la taglia sopra, se è di TMDB. */
+export function ingrandita(url) {
+  return typeof url === "string" ? url.replace("/t/p/w780/", "/t/p/w1280/") : url;
+}
 
 const TTL = 30 * 24 * 60 * 60 * 1000;   // un mese: le locandine non cambiano spesso
 
@@ -64,7 +73,12 @@ export async function posterFor({ title, year, pagePoster }, settings, { force =
   const key = idFor(title, year);
   if (!force) {
     const salvata = await Store.poster(key);
-    if (salvata && Date.now() - salvata.at < TTL) return salvata.url;
+    /* Le locandine salvate prima dell'11 set 2026 puntano a w500. È lo stesso file
+       in una taglia più grande: basta cambiare il pezzo di indirizzo, senza
+       chiedere niente a TMDB una seconda volta. */
+    if (salvata && Date.now() - salvata.at < TTL) {
+      return typeof salvata.url === "string" ? salvata.url.replace("/t/p/w500/", "/t/p/w780/") : salvata.url;
+    }
   }
 
   const ordine =

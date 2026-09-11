@@ -36,7 +36,7 @@ const SCHEMA = {
           aff: { type: "integer", description: "Da 0 a 100." },
           reason: {
             type: "string",
-            description: "Due o tre frasi, in italiano, che citano i titoli in libreria da cui nasce il consiglio. Testo semplice, senza HTML."
+            description: "Due o tre frasi in italiano, meno di 340 caratteri, che citano i titoli in libreria da cui nasce il consiglio. Testo semplice, senza HTML."
           },
           highlight: {
             type: "array",
@@ -70,7 +70,7 @@ Ti do la sua libreria: cosa ha amato, cosa gli è piaciuto, cosa no, cosa aspett
 Regole:
 - Non proporre titoli che ha già in libreria come visti o votati; un titolo «IN LISTA» invece va benissimo, è roba che aspetta.
 - Il campo «aff» è quanto quel titolo somiglia a ciò che ha amato: 0-100, e deve essere onesto. Se il sesto titolo è un azzardo, dàgli 55, non 80.
-- «reason» è il cuore: due o tre frasi in italiano, seconda persona singolare, che dicono da QUALI suoi titoli nasce il consiglio, citandoli per nome. Concreta, niente pubblicità, niente aggettivi da retrocopertina. Se proponi un azzardo, dillo.
+- «reason» è il cuore: due o tre frasi in italiano, **meno di 340 caratteri in tutto**, seconda persona singolare, che dicono da QUALI suoi titoli nasce il consiglio, citandoli per nome. Concreta, niente pubblicità, niente aggettivi da retrocopertina. Se proponi un azzardo, dillo.
 - In «highlight» metti i titoli citati dentro «reason», scritti identici.
 - «chips» sono le affinità misurate, in maiuscolo col peso: «CINEMA ITALIANO +34», «POLITICA +21».
 - Scrivi sempre in italiano, anche se la libreria ha titoli in altre lingue.`;
@@ -138,6 +138,17 @@ export async function proposte(library, settings) {
 /* Quel che arriva dal modello è dato, non codice: niente HTML, niente numeri fuori scala. */
 function pulisci(p) {
   const testo = (v, max) => String(v == null ? "" : v).replace(/<[^>]*>/g, "").slice(0, max);
+
+  /* Il «perché» sta in una scheda alta quanto lo schermo meno il nastro: a 600
+     caratteri sfondava. Si taglia all'ultima frase intera invece che a metà
+     parola — un troncamento che si vede è peggio di una frase in meno. */
+  const aFrase = (v, max) => {
+    const t = testo(v, 800).trim();
+    if (t.length <= max) return t;
+    const corto = t.slice(0, max);
+    const fine = Math.max(corto.lastIndexOf(". "), corto.lastIndexOf("! "), corto.lastIndexOf("? "));
+    return fine > max * 0.5 ? corto.slice(0, fine + 1) : corto.replace(/\s+\S*$/, "") + "…";
+  };
   return {
     title: testo(p.title, 120),
     year: testo(p.year, 4),
@@ -145,7 +156,7 @@ function pulisci(p) {
     runtime: testo(p.runtime, 20),
     rating: testo(p.rating, 10),
     aff: Math.max(0, Math.min(100, Math.round(Number(p.aff) || 0))),
-    reason: testo(p.reason, 600),
+    reason: aFrase(p.reason, 340),
     highlight: [].concat(p.highlight || []).slice(0, 4).map((h) => testo(h, 120)),
     chips: [].concat(p.chips || []).slice(0, 3).map((c) => testo(c, 40)),
     poster: null

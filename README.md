@@ -6,7 +6,7 @@ Estensione che ricorda cosa guardi e ti dice cosa guardare stasera.
 
 ## ⬇︎ Scarica e installa
 
-**[Scarica fosforo-2.6.0.zip](https://github.com/MasterCod24/Fosforo/releases/latest/download/fosforo-2.6.0.zip)** — 208 KB, è l'unico file che ti serve.
+**[Scarica fosforo-2.6.0.zip](https://github.com/MasterCod24/Fosforo/releases/latest/download/fosforo-2.6.0.zip)** — 211 KB, è l'unico file che ti serve.
 
 ### Chrome, Edge, Arc, Brave
 
@@ -62,7 +62,8 @@ zero cromature e zero ciano. Gli artboard da cui nasce sono in [`design/`](desig
 da zero. Le altre cinque proposte sono il nastro in basso; «Rigenera» le rifà.
 
 **Libreria** — il muro di locandine. Un clic su una locandina cambia il voto; la
-ricerca cerca per titolo, regista e anno. **＋ Aggiungi un titolo** serve quando
+ricerca cerca per titolo, regista e anno. I titoli aggiunti a mano cercano la loro
+locandina come tutti gli altri. **＋ Aggiungi un titolo** serve quando
 Fosforo non ha visto passare un film: basta il titolo, anno e tipo si correggono dopo.
 
 **Impostazioni** — quattro schede, raggruppate per conseguenza e non per categoria:
@@ -148,20 +149,23 @@ Provato davvero, offline, in Chromium con l'estensione caricata:
   pagina video, monta l'overlay, «È giusto» mette il titolo in libreria **con la
   locandina presa dalla pagina**, i conteggi si aggiornano, e tutto è ancora lì dopo
   un riavvio del browser.
-- **La dashboard** (`npm run e2e:dash`, 29 passi) — la libreria parte vuota e dice
+- **La dashboard** (`npm run e2e:dash`, 34 passi) — la libreria parte vuota e dice
   come si riempie, aggiungere un titolo a mano lo fa
   comparire in cima alla libreria con lo stato scelto, lo stesso titolo due volte non
   fa due righe, il toast se ne va da solo, le quattro schede mostrano una cosa alla
   volta, un sito zittito **finisce davvero in `chrome.storage.local`**, la modalità
   ospite accende il flag che il service worker legge, la densità cambia la colonna del
-  muro, le animazioni spente non lasciano nessuna animazione attiva. Zero errori
+  muro, le animazioni spente non lasciano nessuna animazione attiva. E su Stasera:
+  i tre bottoni fanno quello che dicono — «Salva per stasera» mette in lista, «Non
+  mi interessa» scarta e non ripropone nemmeno dopo un ricarico — e restano
+  cliccabili anche con un «perché» lungo il triplo del normale. Zero errori
   JavaScript in tutta la sessione.
 
-Tutti e 40 i passi sono stati rifatti **sulla cartella scompattata dallo zip** qui
+Tutti e 45 i passi sono stati rifatti **sulla cartella scompattata dallo zip** qui
 sopra, non sui sorgenti: quel che scarichi è esattamente quel che è stato provato. La
 chiamata a Claude è verificata nella forma — modello, schema della risposta,
 intestazioni, compresa `anthropic-dangerous-direct-browser-access` — con la rete finta
-(`npm test`, 22 test) — e tre di quei test tengono lo schema dentro il sottoinsieme
+(`npm test`, 25 test) — e tre di quei test tengono lo schema dentro il sottoinsieme
 di JSON Schema che gli structured output accettano, perché `maxItems` e `minimum`
 non sono supportati e fanno fallire l'intera richiesta con un 400.
 

@@ -98,6 +98,78 @@ try {
     (await dash.locator("#toast-text").textContent()).toLowerCase().includes(votoDopo.toLowerCase()));
   await dash.waitForTimeout(2800);
 
+  /* ── I tre bottoni di Stasera, che erano solo disegnati ── */
+
+  /* Con un titolo solo non c'è niente da proporre: la modalità demo ragiona su
+     quel che hai votato, quindi qui gli si dà una libreria vera da masticare. */
+  await sw.evaluate(async () => {
+    const got = await chrome.storage.local.get("fosforo");
+    const s = got.fosforo;
+    const righe = [
+      ["Il Divo", "2008", "Sorrentino", "AMATO"], ["Salò", "1975", "Pasolini", "AMATO"],
+      ["La Grande Bellezza", "2013", "Sorrentino", "AMATO"], ["Gomorra", "2014", null, "AMATO"],
+      ["Romanzo Criminale", "2005", "Placido", "PIACIUTO"], ["Il traditore", "2019", "Bellocchio", "PIACIUTO"],
+      ["Suburra", "2015", "Sollima", "NELLA MEDIA"], ["Dogman", "2018", "Garrone", "DA VOTARE"],
+      ["Nostalgia", "2022", "Martone", "DA VOTARE"], ["Vermiglio", "2024", "Delpero", "DA VOTARE"]
+    ];
+    s.library = righe.map(([title, year, director, state]) => ({
+      id: title.toLowerCase() + "|" + year, title, year, director, serie: false,
+      state, poster: null, host: null, addedAt: Date.now(), votedAt: Date.now()
+    }));
+    s.proposals = null;
+    await chrome.storage.local.set({ fosforo: s });
+  });
+
+  /* Cambiare solo l'ancora non rigenera le proposte: serve un ricarico vero. */
+  await dash.goto(url("stasera"));
+  await dash.reload();
+  await dash.locator("#hero-title").waitFor({ timeout: 15000 });
+  await dash.waitForTimeout(2600);
+
+  const titoloProposto = (await dash.locator("#hero-title").textContent()).trim();
+
+  /* Il testo del «perché» è di lunghezza libera: uno lungo spingeva i bottoni
+     sotto il nastro, che sta più in alto nella pila, e non si cliccavano più. */
+  await dash.locator("#aff-reason").evaluate((el) => {
+    el.textContent = "Frase lunga per far crescere la scheda. ".repeat(30);
+  });
+  await dash.waitForTimeout(400);
+
+  const raggiungibile = await dash.locator("#hero-salva").evaluate((el) => {
+    const r = el.getBoundingClientRect();
+    if (r.bottom > window.innerHeight || r.top < 0) return "fuori dallo schermo";
+    const sopra = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+    return el.contains(sopra) || el === sopra ? "ok" : "coperto da " + (sopra && sopra.className);
+  });
+  ok("col perché lungo i bottoni restano cliccabili", raggiungibile === "ok", raggiungibile);
+
+  /* «Salva per stasera» mette davvero in lista */
+  await dash.locator("#hero-salva").click();
+  await dash.waitForTimeout(900);
+  const inLista = await sw.evaluate(async () => {
+    const got = await chrome.storage.local.get("fosforo");
+    return got.fosforo.library.filter((t) => t.state === "IN LISTA").map((t) => t.title);
+  });
+  ok("«Salva per stasera» mette il titolo in lista", inLista.includes(titoloProposto), inLista.join(", ") || "niente");
+
+  /* «Non mi interessa» lo toglie e non lo fa più tornare */
+  const primaDiScartare = (await dash.locator("#hero-title").textContent()).trim();
+  await dash.locator("#hero-scarta").click();
+  await dash.waitForTimeout(900);
+  const dopoScarto = (await dash.locator("#hero-title").textContent()).trim();
+  ok("«Non mi interessa» cambia proposta", dopoScarto !== primaDiScartare, `${primaDiScartare} → ${dopoScarto}`);
+
+  const scartati = await sw.evaluate(async () => {
+    const got = await chrome.storage.local.get("fosforo");
+    return got.fosforo.declined || [];
+  });
+  ok("e lo scarto è scritto su disco", scartati.length > 0, scartati.join(", "));
+
+  await dash.reload();
+  await dash.waitForTimeout(2400);
+  ok("dopo un ricarico non lo ripropone",
+    (await dash.locator("#hero-title").textContent()).trim() !== primaDiScartare);
+
   /* ── 2. Le schede delle impostazioni ── */
   await dash.goto(url("impostazioni"));
   await dash.locator("#set-menu").waitFor({ timeout: 10000 });

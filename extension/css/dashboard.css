@@ -128,13 +128,26 @@ body {
 .scrim-bottom { background: linear-gradient(0deg, rgba(14, 16, 18, .92), rgba(14, 16, 18, .1) 26%, transparent 46%); }
 .scrim-top { background: linear-gradient(180deg, rgba(14, 16, 18, .72), transparent 22%); }
 
+/* L'hero finisce dove comincia il nastro, e non un pixel più in basso.
+   Senza `bottom` cresceva libero: un «perché» lungo spingeva i bottoni sotto il
+   nastro, che ha z-index più alto, e diventavano impossibili da cliccare. Ora lo
+   spazio è quello che è — se il contenuto non ci sta, scorre qui dentro. */
 .hero {
   position: absolute;
   left: 40px;
   top: 128px;
+  bottom: 172px;
   width: clamp(300px, 45%, 520px);
   z-index: 4;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
+/* La scheda si comprime, e a cedere è il testo: i bottoni non si spostano di un
+   pixel qualunque cosa scriva il modello. Un'azione che scompare per colpa della
+   lunghezza di una frase è il difetto peggiore di tutti. */
+.hero > .aff-card { flex: 0 1 auto; min-height: 0; display: flex; flex-direction: column; }
+.hero-actions { flex: none; }
 .hero-eyebrow { margin: 0; display: flex; align-items: center; gap: 11px; }
 .hero-title {
   margin: 20px 0 0;
@@ -156,9 +169,18 @@ body {
 .aff-of { letter-spacing: .16em; color: rgba(242, 244, 246, .35); }
 .aff-track { display: block; margin-top: 12px; height: 2px; border-radius: 2px; background: rgba(242, 244, 246, .12); overflow: hidden; }
 .aff-fill { display: block; height: 100%; background: var(--inchiostro); transform-origin: left; animation: fz-bar 900ms var(--ease) 700ms both; }
-.aff-reason { margin: 18px 0 0; font-size: 14.5px; line-height: 1.62; color: var(--ink-1); text-wrap: pretty; }
+.aff-reason {
+  margin: 18px 0 0;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  font-size: 14.5px;
+  line-height: 1.62;
+  color: var(--ink-1);
+  text-wrap: pretty;
+}
 .aff-reason b { font-weight: 500; color: var(--ink-full); }
-.aff-chips { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px; }
+.aff-chips { flex: none; margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px; }
 .aff-chips span {
   padding: 5px 10px;
   border-radius: 100px;
@@ -598,7 +620,8 @@ body[data-big-poster="off"] .hero { width: 760px; max-width: calc(100% - 80px); 
 @media (max-width: 1000px) {
   .field-pair { grid-template-columns: minmax(0, 1fr); }
   .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .hero { position: static; width: auto; padding: 96px 28px 0; }
+  .hero { position: static; width: auto; padding: 96px 28px 0; bottom: auto; display: block; }
+  .aff-reason { overflow: visible; }
   .poster-panel { width: 100%; opacity: .5; }
   .scrim-left { background: linear-gradient(180deg, rgba(14, 16, 18, .4), #0e1012 58%); }
   .hero-title { font-size: 52px; }
