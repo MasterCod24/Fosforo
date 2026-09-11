@@ -1,0 +1,14 @@
+{
+  "extName": {
+    "message": "Fosforo",
+    "description": "Extension name shown by Safari and the system."
+  },
+  "extDesc": {
+    "message": "Your watch diary: it records what you watch on its own, and Claude suggests what to see next.",
+    "description": "Extension description shown by Safari and the system."
+  },
+  "profDefaultName": {
+    "message": "Main",
+    "description": "Name of the first profile, created automatically on first run."
+  }
+}

@@ -343,8 +343,10 @@ const INTERRUTTORI_REC = [
   ["overlay", "Pannello sulla pagina video", "La pillola in basso a destra mentre guardi. Spegnendola, registra comunque in silenzio."],
   ["askVote", "Chiedimi il voto quando finisco", "Un voto vale più di dieci titoli senza voto: è quello che rende utili i consigli."]
 ];
+/* Niente «Interfaccia in inglese»: qui non c'è i18n, e un interruttore che si
+   accende senza cambiare una parola è una bugia. Torna quando c'è la lingua —
+   vedi `riferimenti/i18n-safari.js` per il motivo per cui non basta `_locales`. */
 const INTERRUTTORI_ASP = [
-  ["english", "Interfaccia in inglese", "Cambia solo le parole dell'interfaccia. I consigli restano nella lingua in cui scrivi le note."],
   ["bigPoster", "Locandina grande su Stasera", "Spenta, la schermata diventa solo tipografia: più veloce, meno cinema."],
   ["motion", "Animazioni", "Le entrate e il numero che sale. Spegnile se preferisci che tutto compaia già fermo."]
 ];

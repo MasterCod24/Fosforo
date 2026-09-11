@@ -6,7 +6,7 @@ Estensione che ricorda cosa guardi e ti dice cosa guardare stasera.
 
 ## ⬇︎ Scarica e installa
 
-**[Scarica fosforo-2.6.0.zip](https://github.com/MasterCod24/fosforo/raw/main/dist/fosforo-2.6.0.zip)** — 207 KB, è l'unico file che ti serve.
+**[Scarica fosforo-2.6.0.zip](https://github.com/MasterCod24/Fosforo/raw/sala-liquid-glass/dist/fosforo-2.6.0.zip)** — 207 KB, è l'unico file che ti serve.
 
 ### Chrome, Edge, Arc, Brave
 
@@ -67,7 +67,7 @@ Fosforo non ha visto passare un film: basta il titolo, anno e tipo si correggono
 |---|---|
 | **Consigli** | la chiave di Claude e da dove arrivano le locandine |
 | **Registrazione** | i tre interruttori, i siti dove non registrare, la modalità ospite |
-| **Aspetto** | quanti titoli per riga, locandina grande su Stasera, animazioni, lingua |
+| **Aspetto** | quanti titoli per riga, locandina grande su Stasera, animazioni |
 | **I tuoi dati** | quanto pesa quel che hai, esporta, cancella tutto |
 
 La **modalità ospite** è un interruttore solo: finché è acceso il service worker non

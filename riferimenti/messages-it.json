@@ -1,0 +1,14 @@
+{
+  "extName": {
+    "message": "Fosforo",
+    "description": "Nome dell'estensione mostrato da Safari e dal sistema."
+  },
+  "extDesc": {
+    "message": "Il tuo diario di visione: registra da solo cosa guardi e Claude ti consiglia cosa vedere dopo.",
+    "description": "Descrizione dell'estensione mostrata da Safari e dal sistema."
+  },
+  "profDefaultName": {
+    "message": "Principale",
+    "description": "Nome del primo profilo, creato automaticamente al primo avvio."
+  }
+}
