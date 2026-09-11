@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fosforo — marchio</title>
+<link rel="stylesheet" href="../css/tokens.css">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fondo); color: var(--inchiostro); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+
+  .sheet { position: relative; min-height: 100vh; overflow: hidden; padding: 40px; }
+  .sheet .ambient { position: absolute; inset: 0; background: radial-gradient(80% 60% at 50% 0%, #1c2023, #0e1012 60%); pointer-events: none; }
+  .grid { position: relative; z-index: 2; display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 48px; }
+
+  /* Costruzione: due cerchi concentrici, niente altro. */
+  .build { display: flex; flex-direction: column; gap: 22px; }
+  .build-mark { position: relative; width: 200px; height: 200px; align-self: center; animation: fz-fade 700ms ease both; }
+  .orbit { position: absolute; inset: -18px; border-radius: 50%; border: 1px dashed rgba(242, 244, 246, .14); animation: fz-orbit 26s linear infinite; }
+  .axis-h { position: absolute; left: -30px; right: -30px; top: 50%; height: 1px; background: rgba(242, 244, 246, .1); }
+  .axis-v { position: absolute; top: -30px; bottom: -30px; left: 50%; width: 1px; background: rgba(242, 244, 246, .1); }
+  .build-text { text-align: center; }
+  .build-text .word { margin: 0; font-size: 22px; font-weight: 500; letter-spacing: .34em; color: var(--ink-full); }
+  .build-text .rule { margin: 10px 0 0; font-size: 12px; color: rgba(242, 244, 246, .45); }
+
+  .cols { min-width: 0; display: flex; flex-direction: column; gap: 26px; }
+  .cap { margin: 0; font-family: var(--mono); font-size: 9px; letter-spacing: .26em; color: var(--ink-3); text-transform: uppercase; }
+
+  /* Provato da 512 a 16: a 16px il centro vuoto è l'unica cosa che si legge. */
+  .scales { margin-top: 18px; display: flex; align-items: flex-end; gap: 26px; }
+  .scale { display: flex; flex-direction: column; align-items: center; gap: 9px; }
+  .scale .lbl { font-family: var(--mono); font-size: 8.5px; letter-spacing: .16em; color: rgba(242, 244, 246, .38); }
+
+  .icons { margin-top: 18px; display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+  /* Angoli superellittici, e l'icona è a sua volta in vetro */
+  .icon-glass {
+    position: relative; width: 104px; height: 104px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 26px;
+    border: 1px solid rgba(255, 255, 255, .2);
+    background: linear-gradient(158deg, rgba(255, 255, 255, .22), rgba(43, 48, 52, .55) 42%, rgba(16, 19, 21, .85));
+    -webkit-backdrop-filter: blur(30px) saturate(190%);
+    backdrop-filter: blur(30px) saturate(190%);
+    box-shadow: 0 16px 36px -14px rgba(0, 0, 0, .9), inset 0 1px 0 rgba(255, 255, 255, .4), inset 0 -2px 2px rgba(0, 0, 0, .35);
+  }
+  .icon-glass .mark { --mark-pupil: #1a1e21; }
+  .icon-solid {
+    position: relative; width: 104px; height: 104px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 24px;
+    background: var(--inchiostro);
+    box-shadow: 0 12px 30px -14px rgba(0, 0, 0, .9);
+  }
+  /* In barra Safari: monocromatico e pieno, invertito sul chiaro */
+  .icon-solid .mark { --mark-pupil: var(--inchiostro); }
+  .icon-solid .mark::before { background: var(--fondo); }
+  .icon-note { min-width: 0; max-width: 32ch; margin: 0; font-size: 12.5px; line-height: 1.6; color: rgba(242, 244, 246, .6); }
+
+  .swatches { margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .sw { flex: 1 1 0; min-width: 0; }
+  .sw .chip { display: block; height: 46px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, .16); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .24), inset 0 -1px 1px rgba(0, 0, 0, .3); }
+  .sw .val { display: block; margin-top: 8px; font-family: var(--mono); font-size: 8.5px; letter-spacing: .12em; color: var(--ink-2); }
+  .sw .use { display: block; margin-top: 3px; font-size: 10.5px; color: rgba(242, 244, 246, .35); }
+
+  @media (max-width: 1000px) {
+    .sheet { padding: 28px; }
+    .grid { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+  <div class="ambient" aria-hidden="true"></div>
+  <div class="grid">
+
+    <div class="build">
+      <div class="build-mark">
+        <span class="orbit" aria-hidden="true"></span>
+        <span class="mark" style="width: 200px; height: 200px;" aria-hidden="true"></span>
+        <span class="axis-h" aria-hidden="true"></span>
+        <span class="axis-v" aria-hidden="true"></span>
+      </div>
+      <div class="build-text">
+        <p class="word">FOSFORO</p>
+        <p class="rule">Diametro interno = 29% del totale. Un solo rapporto, nessuna eccezione.</p>
+      </div>
+    </div>
+
+    <div class="cols">
+
+      <div>
+        <p class="cap">Scale · 512 / 128 / 48 / 32 / 16</p>
+        <div class="scales" id="scales"></div>
+      </div>
+
+      <div>
+        <p class="cap">Icona app · macOS · angoli superellittici</p>
+        <div class="icons">
+          <div class="icon-glass"><span class="mark" style="width: 52px; height: 52px;" aria-hidden="true"></span></div>
+          <div class="icon-solid"><span class="mark" style="width: 52px; height: 52px;" aria-hidden="true"></span></div>
+          <p class="icon-note">In barra Safari il marchio è monocromatico e pieno: a 16px il centro vuoto è l'unica cosa che si legge, ed è quello che lo rende riconoscibile.</p>
+        </div>
+      </div>
+
+      <div>
+        <p class="cap">Materiali · quattro valori, un vetro, nessun colore</p>
+        <div class="swatches" id="swatches"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  /* Un solo rapporto: il centro sta al 29% a qualunque dimensione. */
+  const SCALES = [[88, "512"], [56, "128"], [34, "48"], [24, "32"], [16, "16"]];
+  document.getElementById("scales").innerHTML = SCALES.map(([px, label]) => `
+    <div class="scale">
+      <span class="mark" style="width: ${px}px; height: ${px}px;" aria-hidden="true"></span>
+      <span class="lbl">${label}</span>
+    </div>`).join("");
+
+  const SWATCHES = [
+    ["#0E1012", "#0E1012", "Grafite · fondo"],
+    ["#1B1F22", "#1B1F22", "Superficie"],
+    ["#23272B", "#23272B", "Pozzetto"],
+    ["linear-gradient(154deg, rgba(255,255,255,.28), rgba(255,255,255,.09))", "VETRO", "Vetro · pannelli"],
+    ["#F2F4F6", "#F2F4F6", "Inchiostro · azione"],
+    ["#FF8C84", "#FF8C84", "Solo distruttivo"]
+  ];
+  document.getElementById("swatches").innerHTML = SWATCHES.map(([bg, val, use]) => `
+    <div class="sw">
+      <span class="chip" style="background: ${bg}"></span>
+      <span class="val">${val}</span>
+      <span class="use">${use}</span>
+    </div>`).join("");
+</script>
+</body>
+</html>

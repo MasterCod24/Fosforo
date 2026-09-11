@@ -1,0 +1,157 @@
+/* FOSFORO — SALA
+   Un solo linguaggio: grafite, un unico grigio-vetro che sfoca il fondo,
+   Helvetica bianca, forme a pillola, zero cromature e zero ciano.
+   L'immagine è la superficie, l'interfaccia è vetro che ci galleggia sopra. */
+
+@font-face {
+  font-family: "WNMono";
+  src: url("../assets/fonts/JetBrainsMono-var.woff2") format("woff2");
+  font-weight: 400 700;
+  font-display: swap;
+}
+
+:root {
+  /* Materiali — quattro valori, un vetro, nessun colore */
+  --fondo: #0e1012;
+  --superficie: #1b1f22;
+  --pozzetto: #23272b;
+  --inchiostro: #f2f4f6;
+  --distruttivo: #ff8c84;
+
+  /* Inchiostro per livelli di voce */
+  --ink-full: #fff;
+  --ink-1: rgba(242, 244, 246, .76);
+  --ink-2: rgba(242, 244, 246, .55);
+  --ink-3: rgba(242, 244, 246, .42);
+  --ink-4: rgba(242, 244, 246, .28);
+  --hairline: rgba(242, 244, 246, .1);
+
+  /* Tipografia */
+  --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --mono: "WNMono", ui-monospace, Menlo, monospace;
+
+  /* Movimento — una sola curva, spettacolare in entrata e ferma all'arrivo */
+  --ease: cubic-bezier(.16, .84, .28, 1);
+}
+
+/* ───────────────────────────────────────────────────────────
+   VETRO — quattro spessori, non un effetto uniforme.
+   Nessun altro punto del progetto inventa un blur diverso.
+   ─────────────────────────────────────────────────────────── */
+
+/* Spesso — schede che portano contenuto: affinità, impostazioni */
+.g-thick {
+  border: 1px solid rgba(255, 255, 255, .16);
+  background: linear-gradient(154deg, rgba(255, 255, 255, .13), rgba(255, 255, 255, .045) 42%, rgba(255, 255, 255, .075));
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  backdrop-filter: blur(40px) saturate(180%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .28), inset 0 -1px 1px rgba(0, 0, 0, .3), 0 18px 44px -20px rgba(0, 0, 0, .7);
+}
+
+/* Pillola — azioni secondarie, chip della barra, campi, schede del nastro */
+.g-pill {
+  border: 1px solid rgba(255, 255, 255, .18);
+  background: linear-gradient(150deg, rgba(255, 255, 255, .15), rgba(255, 255, 255, .05) 48%, rgba(255, 255, 255, .09));
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .32), inset 0 -1px 0 rgba(0, 0, 0, .22), 0 4px 14px -6px rgba(0, 0, 0, .5);
+}
+
+/* Sottile — chip, voci di menu, voti: riflesso più contenuto */
+.g-thin {
+  border: 1px solid rgba(255, 255, 255, .14);
+  background: linear-gradient(150deg, rgba(255, 255, 255, .11), rgba(255, 255, 255, .035) 50%, rgba(255, 255, 255, .06));
+  -webkit-backdrop-filter: blur(20px) saturate(170%);
+  backdrop-filter: blur(20px) saturate(170%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .24);
+}
+
+/* Pesante — l'unico vetro che galleggia su contenuto altrui */
+.g-heavy {
+  border: 1px solid rgba(255, 255, 255, .2);
+  background: linear-gradient(158deg, rgba(255, 255, 255, .16), rgba(28, 32, 35, .5) 40%, rgba(20, 23, 25, .62));
+  -webkit-backdrop-filter: blur(52px) saturate(200%);
+  backdrop-filter: blur(52px) saturate(200%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .36), inset 0 -1px 1px rgba(0, 0, 0, .4), 0 26px 60px -22px rgba(0, 0, 0, .9);
+}
+
+/* Barra — lastra con hairline in basso. Su Stasera la barra NON la usa:
+   sotto c'è una locandina, e il vetro corretto lì è nessun vetro. */
+.g-bar {
+  border-bottom: 1px solid rgba(255, 255, 255, .12);
+  background: linear-gradient(180deg, rgba(255, 255, 255, .11), rgba(255, 255, 255, .028));
+  -webkit-backdrop-filter: blur(44px) saturate(185%);
+  backdrop-filter: blur(44px) saturate(185%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .3), 0 12px 30px -22px rgba(0, 0, 0, .9);
+}
+
+/* Banda speculare diagonale: si accende sul vetro spesso più grande */
+.g-specular { position: relative; overflow: hidden; }
+.g-specular::before {
+  content: "";
+  position: absolute;
+  left: -32%; top: -60%;
+  width: 58%; height: 220%;
+  transform: rotate(18deg);
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .13), transparent);
+}
+
+/* Azione primaria: non è vetro, è inchiostro pieno con riflesso */
+.btn-primary {
+  border: 0;
+  background: linear-gradient(180deg, #ffffff, #e5e9ec);
+  color: var(--fondo);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .95), inset 0 -1px 0 rgba(0, 0, 0, .14), 0 6px 20px -8px rgba(0, 0, 0, .6);
+}
+.btn-primary:hover { background: #fff; }
+
+/* ─────────────────────────────── Tipografia di servizio ── */
+
+.mono {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .26em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+}
+.tnum { font-variant-numeric: tabular-nums; }
+
+/* ─────────────────────────────────────── Movimento ── */
+
+@keyframes fz-rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes fz-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fz-bar { from { transform: scaleX(0); } }
+@keyframes fz-breathe { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
+@keyframes fz-slidein { from { opacity: 0; transform: translateX(28px); } to { opacity: 1; transform: none; } }
+@keyframes fz-up { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
+@keyframes fz-orbit { to { transform: rotate(360deg); } }
+
+/* ─────────────────────────────────────── Marchio ── */
+
+/* Due cerchi concentrici, niente altro: regge a 16px come a 512.
+   Diametro interno = 29% del totale, un solo rapporto, nessuna eccezione. */
+.mark { position: relative; display: block; width: 17px; height: 17px; flex: none; }
+.mark::before,
+.mark::after { content: ""; position: absolute; border-radius: 50%; }
+.mark::before { inset: 0; background: var(--inchiostro); }
+.mark::after { inset: 29%; background: var(--mark-pupil, var(--fondo)); }
+
+/* `hidden` deve vincere: altrove c'è display:flex, che se no lo scavalca. */
+[hidden] { display: none !important; }
+
+/* ─────────────────────────────────────── Accessibilità ── */
+
+:focus-visible {
+  outline: 1px solid var(--inchiostro);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+}

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fosforo</title>
+<link rel="stylesheet" href="../css/tokens.css">
+<link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body data-view="stasera">
+
+<!-- ══ 2a STASERA ══ Un titolo alla volta, la locandina a tutta altezza. -->
+<section class="view view-stasera" id="view-stasera" aria-label="Stasera">
+  <div class="ambient" aria-hidden="true"></div>
+
+  <!-- La locandina È la superficie: entra in dissolvenza, e sopra le passano
+       tre sfumature perché il testo tenga il contrasto qualunque immagine sia. -->
+  <div class="poster-panel" aria-hidden="true">
+    <img class="poster-img" id="hero-poster" alt="" hidden>
+    <span class="poster-texture" id="hero-poster-fallback" hidden></span>
+  </div>
+  <div class="scrim scrim-left" aria-hidden="true"></div>
+  <div class="scrim scrim-bottom" aria-hidden="true"></div>
+  <div class="scrim scrim-top" aria-hidden="true"></div>
+
+  <header class="topbar topbar-bare">
+    <a class="brand" href="#stasera">
+      <span class="mark" aria-hidden="true"></span>
+      <span class="brand-name">FOSFORO</span>
+    </a>
+    <nav class="nav" aria-label="Sezioni">
+      <a href="#stasera" data-goto="stasera" aria-current="page">Stasera</a>
+      <a href="#libreria" data-goto="libreria">Libreria</a>
+      <span class="nav-off" aria-disabled="true" title="In arrivo">Diario</span>
+      <a href="#impostazioni" data-goto="impostazioni">Impostazioni</a>
+    </nav>
+    <div class="topbar-end">
+      <span class="chip-count g-pill">
+        <span class="pulse" aria-hidden="true"></span>
+        <span class="mono" id="titoli-count">—</span>
+      </span>
+      <span class="avatar">M</span>
+    </div>
+  </header>
+
+  <div class="hero" id="hero">
+    <p class="hero-eyebrow" data-anim="1">
+      <span class="mono">Stasera</span>
+      <span class="rule"></span>
+      <span class="mono nota" id="stasera-nota"></span>
+    </p>
+    <h1 class="hero-title" id="hero-title" data-anim="2">Il Conformista</h1>
+    <div class="hero-meta" id="hero-meta" data-anim="3"></div>
+
+    <div class="aff-card g-thick g-specular" data-anim="4">
+      <div class="aff-head">
+        <span class="mono">Affinità</span>
+        <span class="aff-score tnum" id="aff-score" aria-live="polite">0</span>
+        <span class="mono aff-of">/100</span>
+      </div>
+      <span class="aff-track"><i class="aff-fill" id="aff-fill"></i></span>
+      <p class="aff-reason" id="aff-reason"></p>
+      <div class="aff-chips" id="aff-chips"></div>
+    </div>
+
+    <div class="hero-actions" data-anim="5">
+      <button class="btn btn-primary" type="button"><span class="play" aria-hidden="true"></span>Guarda il trailer</button>
+      <button class="btn g-pill" type="button">Salva per stasera</button>
+      <button class="btn btn-ghost" type="button">Non mi interessa</button>
+    </div>
+  </div>
+
+  <!-- Dove sei nelle sei proposte -->
+  <div class="stepper" id="stepper" aria-hidden="true"></div>
+
+  <div class="strip">
+    <div class="strip-head">
+      <span class="mono" id="strip-count">Altre proposte</span>
+      <span class="rule rule-flat"></span>
+      <button class="linkish" type="button" id="rigenera">Rigenera</button>
+    </div>
+    <div class="strip-row" id="strip"></div>
+  </div>
+</section>
+
+<!-- ══ 2b LIBRERIA ══ Muro di locandine, nessuna cornice, nessuna sigla d'angolo. -->
+<section class="view view-libreria" id="view-libreria" aria-label="Libreria" hidden>
+  <div class="ambient" aria-hidden="true"></div>
+
+  <header class="topbar g-bar">
+    <a class="brand" href="#stasera">
+      <span class="mark" aria-hidden="true"></span>
+      <span class="brand-name">FOSFORO</span>
+    </a>
+    <nav class="nav" aria-label="Sezioni">
+      <a href="#stasera" data-goto="stasera">Stasera</a>
+      <a href="#libreria" data-goto="libreria" aria-current="page">Libreria</a>
+      <span class="nav-off" aria-disabled="true" title="In arrivo">Diario</span>
+      <a href="#impostazioni" data-goto="impostazioni">Impostazioni</a>
+    </nav>
+    <div class="topbar-end">
+      <button class="btn btn-primary btn-sm" type="button">＋ Aggiungi un titolo</button>
+      <span class="avatar">M</span>
+    </div>
+  </header>
+
+  <div class="lib-head" data-anim="1">
+    <div class="lib-title">
+      <h1>Libreria</h1>
+      <p id="lib-count">—</p>
+    </div>
+    <label class="search g-pill">
+      <span class="lens" aria-hidden="true"></span>
+      <input type="search" id="lib-search" placeholder="Cerca un titolo, un regista, un anno" aria-label="Cerca nella libreria">
+    </label>
+  </div>
+
+  <div class="lib-filters" id="lib-filters" role="group" aria-label="Filtri"></div>
+
+  <div class="wall-wrap">
+    <div class="wall" id="wall"></div>
+    <p class="wall-empty" id="wall-empty" hidden>Nessun titolo per questa ricerca.</p>
+  </div>
+
+  <div class="lib-foot" aria-hidden="true"></div>
+</section>
+
+<!-- ══ 2c IMPOSTAZIONI ══ Una colonna, raggruppata per conseguenza, non per categoria. -->
+<section class="view view-impostazioni" id="view-impostazioni" aria-label="Impostazioni" hidden>
+  <div class="ambient" aria-hidden="true"></div>
+
+  <header class="topbar g-bar">
+    <a class="brand" href="#stasera">
+      <span class="mark" aria-hidden="true"></span>
+      <span class="brand-name">FOSFORO</span>
+    </a>
+    <nav class="nav" aria-label="Sezioni">
+      <a href="#stasera" data-goto="stasera">Stasera</a>
+      <a href="#libreria" data-goto="libreria">Libreria</a>
+      <span class="nav-off" aria-disabled="true" title="In arrivo">Diario</span>
+      <a href="#impostazioni" data-goto="impostazioni" aria-current="page">Impostazioni</a>
+    </nav>
+    <span class="avatar avatar-end">M</span>
+  </header>
+
+  <div class="set-grid">
+    <aside class="set-aside" data-anim="1">
+      <h1>Impostazioni</h1>
+      <div class="set-menu">
+        <button class="set-menu-item g-thin is-on" type="button" aria-current="true">Consigli</button>
+        <button class="set-menu-item" type="button">Registrazione</button>
+        <button class="set-menu-item" type="button">Aspetto</button>
+        <button class="set-menu-item" type="button">Profili</button>
+        <button class="set-menu-item" type="button">I tuoi dati</button>
+      </div>
+      <p class="set-build mono">Fosforo 2.6<br>Safari · macOS<br>Offline ready</p>
+    </aside>
+
+    <div class="set-col">
+
+      <div class="set-card g-thick" data-anim="2">
+        <div class="set-card-head">
+          <h2>Chiave API di Claude</h2>
+          <span class="state">
+            <span class="state-dot" id="api-dot" aria-hidden="true"></span>
+            <span class="mono" id="api-state">—</span>
+          </span>
+        </div>
+        <p class="set-note">Senza chiave Fosforo funziona in modalità demo: registra cosa guardi, ma non genera consigli. La chiave resta sul tuo Mac e non passa da nessun server nostro.</p>
+        <div class="set-key">
+          <input type="password" class="g-thin" id="api-key" placeholder="sk-ant-api03-…" autocomplete="off" spellcheck="false" aria-label="Chiave API di Claude">
+          <button class="btn btn-primary btn-sm" type="button" id="verify-key">Verifica</button>
+        </div>
+      </div>
+
+      <div class="set-card g-thick" data-anim="3">
+        <h2>Da dove arrivano le locandine</h2>
+        <p class="set-note">Fosforo non ha un archivio di immagini: le prende da fuori. Scegliere «dal sito» significa nessuna richiesta a terzi.</p>
+        <div class="poster-opts" id="poster-opts" role="radiogroup" aria-label="Sorgente delle locandine"></div>
+        <div class="set-key" id="tmdb-row" hidden>
+          <input type="password" class="g-thin" id="tmdb-key" placeholder="Chiave TMDB (v3 o token v4)" autocomplete="off" spellcheck="false" aria-label="Chiave TMDB">
+        </div>
+      </div>
+
+      <div class="set-card set-card-flush g-thick" data-anim="4">
+        <div id="toggles"></div>
+      </div>
+
+      <div class="set-data g-thin" data-anim="5">
+        <div class="set-data-text">
+          <p class="set-data-title">I tuoi dati restano qui</p>
+          <p class="set-data-note" id="data-note">—</p>
+        </div>
+        <button class="btn g-pill btn-sm" type="button" id="export">Esporta</button>
+        <button class="btn btn-danger btn-sm" type="button" id="wipe">Cancella tutto</button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script type="module" src="../js/dashboard.js"></script>
+</body>
+</html>

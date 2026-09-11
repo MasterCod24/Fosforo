@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fosforo — pannello sulla pagina video</title>
+<link rel="stylesheet" href="../content/overlay.css">
+<style>
+  /* Questa pagina è il finto player: nell'estensione vera non esiste,
+     al suo posto c'è il sito che stai guardando. */
+  html, body { height: 100%; }
+  body { margin: 0; background: #08090a; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+  .page { position: absolute; inset: 0; display: flex; flex-direction: column; }
+
+  .chrome {
+    flex: none;
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 14px;
+    background: #2a2d30;
+    border-bottom: 1px solid rgba(255, 255, 255, .06);
+  }
+  .lights { display: flex; gap: 7px; }
+  .lights span { width: 11px; height: 11px; border-radius: 50%; background: #5c6165; }
+  .url {
+    margin-left: 12px; flex: 1; max-width: 420px;
+    padding: 6px 14px;
+    border-radius: 7px;
+    background: #1d2022;
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 10.5px;
+    color: rgba(255, 255, 255, .5);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+
+  .stage {
+    flex: 1;
+    position: relative;
+    background: #101214;
+    background-image: repeating-linear-gradient(122deg, rgba(255, 255, 255, .02) 0 14px, rgba(255, 255, 255, 0) 14px 28px);
+  }
+  .stage-label {
+    position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 10px; letter-spacing: .24em;
+    color: rgba(255, 255, 255, .16);
+  }
+
+  /* I controlli del player: l'overlay non deve coprirli mai */
+  .controls { position: absolute; left: 0; right: 0; bottom: 0; padding: 22px 26px; background: linear-gradient(transparent, rgba(0, 0, 0, .72)); }
+  .progress { display: block; height: 3px; border-radius: 3px; background: rgba(255, 255, 255, .2); overflow: hidden; }
+  .progress i { display: block; height: 100%; width: 34%; background: #fff; }
+  .controls-row { margin-top: 14px; display: flex; align-items: center; gap: 18px; color: rgba(255, 255, 255, .85); }
+  .play { width: 0; height: 0; border-left: 11px solid currentColor; border-top: 7px solid transparent; border-bottom: 7px solid transparent; }
+  .time { font-family: ui-monospace, Menlo, monospace; font-size: 11px; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="chrome">
+    <span class="lights" aria-hidden="true"><span></span><span></span><span></span></span>
+    <span class="url">raiplay.it/programmi/ilconformista</span>
+  </div>
+  <div class="stage">
+    <span class="stage-label">PAGINA VIDEO · PLAYER IN RIPRODUZIONE</span>
+    <div class="controls">
+      <span class="progress"><i></i></span>
+      <div class="controls-row">
+        <span class="play" aria-hidden="true"></span>
+        <span class="time">38:24 / 1:53:10</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="../content/overlay.js"></script>
+<script>
+  /* Nell'estensione questa riga sta nel content script. */
+  FosforoOverlay.mount({
+    title: "Il Conformista",
+    meta: "1970 · Drammatico · raiplay.it",
+    site: "raiplay.it"
+    /* poster: "…" — nell'artboard la miniatura è il pozzetto rigato,
+       perché l'immagine la fornisce il sito. Passa `poster` per usarla. */
+  });
+</script>
+</body>
+</html>

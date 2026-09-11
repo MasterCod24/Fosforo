@@ -1,0 +1,245 @@
+/* FOSFORO — pannello sulla pagina video.
+   Gira dentro la pagina di qualcun altro: tutto è sotto #fosforo-overlay,
+   nessun selettore di elemento nudo, nessun nome di keyframe generico.
+   Il vetro qui è il più pesante di tutta l'estensione — è l'unico che
+   galleggia su contenuto altrui. */
+
+@font-face {
+  font-family: "WNMono";
+  /* Nell'estensione: web_accessible_resources + browser.runtime.getURL() */
+  src: url("../assets/fonts/JetBrainsMono-var.woff2") format("woff2");
+  font-weight: 400 700;
+  font-display: swap;
+}
+
+#fosforo-overlay {
+  all: initial;
+
+  --fsf-ink: #f2f4f6;
+  --fsf-scuro: #141719;
+  --fsf-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --fsf-mono: "WNMono", ui-monospace, Menlo, monospace;
+  --fsf-ease: cubic-bezier(.16, .84, .28, 1);
+
+  position: fixed;
+  right: 0; bottom: 0;
+  z-index: 2147483000;
+  font-family: var(--fsf-sans);
+  color: var(--fsf-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+#fosforo-overlay *,
+#fosforo-overlay *::before,
+#fosforo-overlay *::after { box-sizing: border-box; }
+
+#fosforo-overlay [hidden] { display: none !important; }
+
+/* Vetro pesante — blur 52px, il più rifrattivo */
+#fosforo-overlay .fsf-glass {
+  border: 1px solid rgba(255, 255, 255, .2);
+  background: linear-gradient(158deg, rgba(255, 255, 255, .16), rgba(28, 32, 35, .5) 40%, rgba(20, 23, 25, .62));
+  -webkit-backdrop-filter: blur(52px) saturate(200%);
+  backdrop-filter: blur(52px) saturate(200%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .36), inset 0 -1px 1px rgba(0, 0, 0, .4), 0 26px 60px -22px rgba(0, 0, 0, .9);
+}
+
+/* Il marchio: due cerchi concentrici, interno al 29% */
+#fosforo-overlay .fsf-mark { position: relative; display: block; flex: none; width: 14px; height: 14px; }
+#fosforo-overlay .fsf-mark::before,
+#fosforo-overlay .fsf-mark::after { content: ""; position: absolute; border-radius: 50%; }
+#fosforo-overlay .fsf-mark::before { inset: 0; background: var(--fsf-ink); }
+#fosforo-overlay .fsf-mark::after { inset: 29%; background: var(--fsf-scuro); }
+
+/* ─────────────────────────── La pillola ─── */
+
+#fosforo-overlay .fsf-pill {
+  position: fixed;
+  right: 22px; bottom: 22px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 15px;
+  border-radius: 100px;
+  cursor: pointer;
+  font-family: inherit;
+  animation: fsf-fade 500ms ease 200ms both;
+}
+#fosforo-overlay .fsf-pill:hover { border-color: rgba(242, 244, 246, .4); }
+#fosforo-overlay .fsf-pill-label {
+  font-family: var(--fsf-mono);
+  font-size: 9px;
+  letter-spacing: .2em;
+  color: rgba(242, 244, 246, .78);
+  text-transform: uppercase;
+}
+
+/* ─────────────────────────── La scheda ─── */
+
+#fosforo-overlay .fsf-card {
+  position: fixed;
+  right: 22px; bottom: 96px;
+  width: 318px;
+  border-radius: 22px;
+  overflow: hidden;
+  animation: fsf-slidein 620ms var(--fsf-ease) both;
+}
+
+#fosforo-overlay .fsf-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 17px 13px;
+  border-bottom: 1px solid rgba(242, 244, 246, .08);
+}
+#fosforo-overlay .fsf-head .fsf-mark { width: 15px; height: 15px; }
+#fosforo-overlay .fsf-wordmark { font-size: 11px; font-weight: 500; letter-spacing: .28em; color: var(--fsf-ink); }
+#fosforo-overlay .fsf-close {
+  margin-left: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 1;
+  color: rgba(242, 244, 246, .4);
+  cursor: pointer;
+}
+#fosforo-overlay .fsf-close:hover { color: var(--fsf-ink); }
+
+#fosforo-overlay .fsf-body { padding: 17px; }
+
+#fosforo-overlay .fsf-eyebrow {
+  margin: 0;
+  font-family: var(--fsf-mono);
+  font-size: 8.5px;
+  letter-spacing: .22em;
+  color: rgba(242, 244, 246, .42);
+  text-transform: uppercase;
+}
+
+#fosforo-overlay .fsf-title-row { margin-top: 12px; display: flex; gap: 13px; align-items: flex-start; }
+#fosforo-overlay .fsf-thumb {
+  flex: none;
+  width: 46px; height: 69px;
+  border-radius: 5px;
+  background-color: #262a2e;
+  background-image: repeating-linear-gradient(122deg, rgba(255, 255, 255, .05) 0 7px, rgba(255, 255, 255, 0) 7px 14px);
+  background-size: cover;
+  background-position: center;
+}
+#fosforo-overlay .fsf-title { margin: 0; font-size: 14.5px; font-weight: 500; line-height: 1.25; color: #fff; }
+#fosforo-overlay .fsf-meta { margin: 5px 0 0; font-size: 11.5px; color: rgba(242, 244, 246, .5); }
+/* Dice cosa ha registrato e come annullarlo */
+#fosforo-overlay .fsf-said { margin: 9px 0 0; font-size: 11.5px; line-height: 1.5; color: rgba(242, 244, 246, .62); }
+
+#fosforo-overlay .fsf-actions { margin-top: 15px; display: flex; gap: 7px; }
+#fosforo-overlay .fsf-btn {
+  flex: 1;
+  padding: 11px 12px;
+  border-radius: 100px;
+  font-family: inherit;
+  font-size: 11.5px;
+  color: var(--fsf-ink);
+  cursor: pointer;
+}
+#fosforo-overlay .fsf-btn-primary {
+  border: 0;
+  background: linear-gradient(180deg, #ffffff, #e5e9ec);
+  color: #0e1012;
+  font-weight: 500;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .95), inset 0 -1px 0 rgba(0, 0, 0, .14), 0 6px 20px -8px rgba(0, 0, 0, .6);
+}
+#fosforo-overlay .fsf-btn-primary:hover { background: #fff; }
+/* Vetro sottile per l'azione di ripiego */
+#fosforo-overlay .fsf-btn-glass {
+  border: 1px solid rgba(255, 255, 255, .18);
+  background: linear-gradient(150deg, rgba(255, 255, 255, .15), rgba(255, 255, 255, .05) 48%, rgba(255, 255, 255, .09));
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .32), inset 0 -1px 0 rgba(0, 0, 0, .22), 0 4px 14px -6px rgba(0, 0, 0, .5);
+}
+#fosforo-overlay .fsf-btn-glass:hover { border-color: rgba(242, 244, 246, .45); }
+
+#fosforo-overlay .fsf-rate { margin-top: 17px; padding-top: 15px; border-top: 1px solid rgba(242, 244, 246, .08); }
+#fosforo-overlay .fsf-rate-row { margin-top: 11px; display: flex; gap: 6px; }
+#fosforo-overlay .fsf-vote {
+  flex: 1;
+  min-width: 0;
+  padding: 9px 6px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, .14);
+  background: linear-gradient(150deg, rgba(255, 255, 255, .11), rgba(255, 255, 255, .035) 50%, rgba(255, 255, 255, .06));
+  -webkit-backdrop-filter: blur(20px) saturate(170%);
+  backdrop-filter: blur(20px) saturate(170%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .24);
+  color: rgba(242, 244, 246, .78);
+  font-family: inherit;
+  font-size: 10.5px;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#fosforo-overlay .fsf-vote:hover,
+#fosforo-overlay .fsf-vote[aria-pressed="true"] {
+  border-color: var(--fsf-ink);
+  color: #fff;
+  background: rgba(242, 244, 246, .1);
+}
+
+#fosforo-overlay .fsf-foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 17px;
+  border-top: 1px solid rgba(255, 255, 255, .12);
+  background: linear-gradient(180deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, .02));
+}
+#fosforo-overlay .fsf-foot-label { font-size: 11px; color: rgba(242, 244, 246, .5); }
+
+/* Interruttore piccolo: binario di vetro incassato */
+#fosforo-overlay .fsf-switch {
+  position: relative;
+  flex: none;
+  margin-left: auto;
+  width: 34px; height: 20px;
+  padding: 0;
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, .2);
+  background: linear-gradient(180deg, rgba(255, 255, 255, .09), rgba(255, 255, 255, .18));
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, .35);
+  cursor: pointer;
+  transition: background 240ms var(--fsf-ease), border-color 240ms var(--fsf-ease);
+}
+#fosforo-overlay .fsf-knob {
+  position: absolute;
+  top: 2.5px; left: 3px;
+  width: 13px; height: 13px;
+  border-radius: 50%;
+  background: rgba(242, 244, 246, .6);
+  transition: left 240ms var(--fsf-ease), background 240ms var(--fsf-ease);
+}
+#fosforo-overlay .fsf-switch[aria-pressed="true"] {
+  border-color: rgba(255, 255, 255, .7);
+  background: linear-gradient(180deg, #ffffff, #dfe4e8);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .9);
+}
+#fosforo-overlay .fsf-switch[aria-pressed="true"] .fsf-knob { left: 16px; background: #0e1012; }
+
+#fosforo-overlay :focus-visible { outline: 1px solid var(--fsf-ink); outline-offset: 2px; }
+
+@keyframes fsf-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fsf-slidein { from { opacity: 0; transform: translateX(28px); } to { opacity: 1; transform: none; } }
+@keyframes fsf-breathe { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  #fosforo-overlay *,
+  #fosforo-overlay *::before,
+  #fosforo-overlay *::after {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+}
