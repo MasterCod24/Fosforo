@@ -43,7 +43,11 @@ export const DEFAULTS = {
   overlay: true,          // «Pannello sulla pagina video»
   askVote: true,          // «Chiedimi il voto quando finisco»
   english: false,         // «Interfaccia in inglese»
-  mutedHosts: []          // «Non registrare su questo sito»
+  mutedHosts: [],         // «Non registrare su questo sito»
+  guest: false,           // «Modalità ospite»: non registra e non chiede voti
+  density: 8,             // titoli per riga in Libreria: 6 | 8 | 10
+  bigPoster: true,        // «Locandina grande su Stasera»
+  motion: true            // «Animazioni»
 };
 
 /** Gli stati che un titolo può avere, dal più amato al meno. */

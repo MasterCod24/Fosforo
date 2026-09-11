@@ -4,6 +4,7 @@
 import { Store } from "../lib/store.js";
 import { ask, isExtension } from "../lib/platform.js";
 import { proposteLocali } from "../lib/rank.js";
+import { idFor } from "../lib/title.js";
 
 const $ = (sel, root) => (root || document).querySelector(sel);
 const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
@@ -27,6 +28,20 @@ function replay(el) {
   el.style.animation = "none";
   void el.offsetWidth;
   el.style.animation = "";
+}
+
+/* ═══════════════════════════════════ TOAST ═══ */
+
+/* Dice cos'è appena successo e se ne va da solo. Va tolto dal DOM da qui:
+   lasciato al solo CSS resterebbe a schermo a bloccare i clic. */
+let toastTimer = null;
+function flash(messaggio) {
+  const t = $("#toast");
+  $("#toast-text").textContent = messaggio;
+  t.hidden = false;
+  replay(t);
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.hidden = true; }, 2600);
 }
 
 /* ═══════════════════════════════ STASERA ═══ */
@@ -233,6 +248,87 @@ $("#wall").addEventListener("click", async (e) => {
   renderWall();
 });
 
+/* ─────────────────────── Aggiungi un titolo a mano ─── */
+
+/* Serve quando Fosforo non ha visto passare un film: un titolo basta,
+   anno e tipo si correggono dopo dalla Libreria. */
+
+const scrim = $("#add-scrim");
+const campoTitolo = $("#add-title");
+const campoAnno = $("#add-year");
+
+function segScelto(gruppo) {
+  const b = $('[aria-checked="true"]', $(gruppo));
+  return b ? b.dataset : {};
+}
+
+function segClick(gruppo) {
+  $(gruppo).addEventListener("click", (e) => {
+    const b = e.target.closest(".seg-btn");
+    if (!b) return;
+    $$(".seg-btn", $(gruppo)).forEach((x) => x.setAttribute("aria-checked", String(x === b)));
+  });
+}
+segClick("#add-kind");
+segClick("#add-state");
+
+/* Il bottone resta spento finché non c'è un titolo: non si aggiunge il vuoto. */
+function aggiornaAdd() {
+  const ok = campoTitolo.value.trim().length > 1;
+  $("#add-confirm").disabled = !ok;
+  $("#add-hint").textContent = ok
+    ? "Entra subito nella libreria, con lo stato che hai scelto."
+    : "Basta il titolo: anno e tipo li puoi correggere dopo.";
+}
+
+function apriAdd() {
+  campoTitolo.value = "";
+  campoAnno.value = "";
+  $$("#add-kind .seg-btn").forEach((b, i) => b.setAttribute("aria-checked", String(i === 0)));
+  $$("#add-state .seg-btn").forEach((b, i) => b.setAttribute("aria-checked", String(i === 0)));
+  aggiornaAdd();
+  scrim.hidden = false;
+  campoTitolo.focus();
+}
+
+function chiudiAdd() { scrim.hidden = true; }
+
+$("#add-open").addEventListener("click", apriAdd);
+$("#add-close").addEventListener("click", chiudiAdd);
+$("#add-cancel").addEventListener("click", chiudiAdd);
+/* Il clic sullo sfondo chiude; quello sulla scheda no. */
+scrim.addEventListener("click", (e) => { if (e.target === scrim) chiudiAdd(); });
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && !scrim.hidden) chiudiAdd();
+  if (e.key === "Enter" && !scrim.hidden && !$("#add-confirm").disabled) confermaAdd();
+});
+
+campoTitolo.addEventListener("input", aggiornaAdd);
+campoAnno.addEventListener("input", function () {
+  this.value = this.value.replace(/[^0-9]/g, "").slice(0, 4);
+});
+
+async function confermaAdd() {
+  const title = campoTitolo.value.trim();
+  if (title.length < 2) return;
+  const year = campoAnno.value.trim() || null;
+  const serie = segScelto("#add-kind").kind === "serie";
+  const state = segScelto("#add-state").state || "IN LISTA";
+
+  await Store.remember({
+    id: idFor(title, year),
+    title, year, serie, state,
+    director: null, poster: null, host: null,
+    addedAt: Date.now()
+  });
+
+  chiudiAdd();
+  await caricaLibreria();
+  flash(`«${title}» è in libreria.`);
+}
+
+$("#add-confirm").addEventListener("click", confermaAdd);
+
 /* ═══════════════════════════ IMPOSTAZIONI ═══ */
 
 const SORGENTI = [
@@ -240,12 +336,41 @@ const SORGENTI = [
   { id: "tmdb", label: "TMDB", note: "Locandine complete e pulite. Una richiesta per titolo." },
   { id: "none", label: "Nessuna", note: "Solo tipografia. La più veloce, e non chiede niente a nessuno." }
 ];
-const INTERRUTTORI = [
+/* Raggruppati per conseguenza, non per categoria tecnica: quel che riguarda
+   la registrazione sta con la registrazione, quel che si vede sta con l'aspetto. */
+const INTERRUTTORI_REC = [
   ["autoRecord", "Registra da solo cosa guardo", "Fosforo riconosce film e serie sulle pagine che apri e li mette in attesa di conferma. Niente esce dal tuo Mac."],
   ["overlay", "Pannello sulla pagina video", "La pillola in basso a destra mentre guardi. Spegnendola, registra comunque in silenzio."],
-  ["askVote", "Chiedimi il voto quando finisco", "Un voto vale più di dieci titoli senza voto: è quello che rende utili i consigli."],
-  ["english", "Interfaccia in inglese", "Cambia solo le parole dell'interfaccia. I consigli restano nella lingua in cui scrivi le note."]
+  ["askVote", "Chiedimi il voto quando finisco", "Un voto vale più di dieci titoli senza voto: è quello che rende utili i consigli."]
 ];
+const INTERRUTTORI_ASP = [
+  ["english", "Interfaccia in inglese", "Cambia solo le parole dell'interfaccia. I consigli restano nella lingua in cui scrivi le note."],
+  ["bigPoster", "Locandina grande su Stasera", "Spenta, la schermata diventa solo tipografia: più veloce, meno cinema."],
+  ["motion", "Animazioni", "Le entrate e il numero che sale. Spegnile se preferisci che tutto compaia già fermo."]
+];
+
+const switchHTML = (s) => ([id, label, note]) => `
+  <div class="toggle-row">
+    <div>
+      <p class="toggle-label">${label}</p>
+      <p class="toggle-note">${note}</p>
+    </div>
+    <button class="switch" type="button" role="switch" data-id="${id}" aria-pressed="${Boolean(s[id])}" aria-label="${label}">
+      <span class="knob"></span>
+    </button>
+  </div>`;
+
+/** Quel che si vede si applica al body: densità, locandina e movimento. */
+function applicaAspetto(s) {
+  document.body.dataset.density = String(s.density || 8);
+  document.body.dataset.bigPoster = s.bigPoster === false ? "off" : "on";
+  document.body.dataset.motion = s.motion === false ? "off" : "on";
+}
+
+function renderHosts(hosts) {
+  $("#hosts").innerHTML = (hosts || []).map((h) => `
+    <span class="host-chip g-thin">${esc(h)}<button class="host-x" type="button" data-host="${esc(h)}" aria-label="Togli ${esc(h)}">✕</button></span>`).join("");
+}
 
 async function caricaImpostazioni() {
   const s = await Store.settings();
@@ -262,22 +387,55 @@ async function caricaImpostazioni() {
     </button>`).join("");
   $("#tmdb-row").hidden = s.posterSource !== "tmdb";
 
-  $("#toggles").innerHTML = INTERRUTTORI.map(([id, label, note]) => `
-    <div class="toggle-row">
-      <div>
-        <p class="toggle-label">${label}</p>
-        <p class="toggle-note">${note}</p>
-      </div>
-      <button class="switch" type="button" role="switch" data-id="${id}" aria-pressed="${Boolean(s[id])}" aria-label="${label}">
-        <span class="knob"></span>
-      </button>
-    </div>`).join("");
+  $("#toggles-rec").innerHTML = INTERRUTTORI_REC.map(switchHTML(s)).join("");
+  $("#toggles-asp").innerHTML = INTERRUTTORI_ASP.map(switchHTML(s)).join("");
 
-  const lib = await Store.library();
+  renderHosts(s.mutedHosts);
+
+  const g = $("#guest-toggle");
+  g.setAttribute("aria-pressed", String(Boolean(s.guest)));
+  g.textContent = s.guest ? "Esci dalla modalità ospite" : "Entra in modalità ospite";
+
+  $$("#density .seg-btn").forEach((b) =>
+    b.setAttribute("aria-checked", String(Number(b.dataset.density) === Number(s.density || 8))));
+
+  /* Le cifre sono contate adesso, non scritte a mano nel disegno. */
+  const stato = await Store.load();
+  const lib = stato.library;
   const voti = lib.filter((t) => t.state !== "DA VOTARE" && t.state !== "IN LISTA").length;
+  const kb = new Blob([JSON.stringify(stato)]).size / 1024;
+  const peso = kb >= 1024 ? (kb / 1024).toFixed(1).replace(".", ",") : Math.round(kb);
+  const unita = kb >= 1024 ? "MEGABYTE" : "KILOBYTE";
+
+  $("#stats").innerHTML = [
+    [lib.length, "TITOLI"],
+    [voti, "VOTI"],
+    [(s.mutedHosts || []).length, "SITI ZITTITI"],
+    [peso, unita]
+  ].map(([n, l]) => `<div><p class="stat-n">${n}</p><p class="stat-l mono">${l}</p></div>`).join("");
+
+  $("#stats-note").textContent =
+    `Tutto sta nel contenitore dell'estensione, sul tuo Mac. Non esiste un nostro server: se cancelli, è cancellato davvero.`;
+
   $("#data-note").textContent =
     `${lib.length} titoli, ${voti} voti, ${(s.mutedHosts || []).length} siti zittiti. Niente account, niente sincronizzazione, niente server.`;
+
+  applicaAspetto(s);
 }
+
+/* ── Le quattro schede ── */
+$("#set-menu").addEventListener("click", (e) => {
+  const b = e.target.closest(".set-menu-item");
+  if (!b) return;
+  $$("#set-menu .set-menu-item").forEach((x) => {
+    const on = x === b;
+    x.classList.toggle("is-on", on);
+    x.classList.toggle("g-thin", on);
+    if (on) x.setAttribute("aria-current", "true"); else x.removeAttribute("aria-current");
+  });
+  $$("#set-col .set-panel").forEach((p) => { p.hidden = p.dataset.panel !== b.dataset.tab; });
+  $$("[data-anim]", $(`[data-panel="${b.dataset.tab}"]`)).forEach(replay);
+});
 
 $("#poster-opts").addEventListener("click", async (e) => {
   const b = e.target.closest(".poster-opt");
@@ -287,12 +445,65 @@ $("#poster-opts").addEventListener("click", async (e) => {
   await Store.patchSettings({ posterSource: b.dataset.id });
 });
 
-$("#toggles").addEventListener("click", async (e) => {
+async function cambiaInterruttore(e) {
   const s = e.target.closest(".switch");
   if (!s) return;
   const on = s.getAttribute("aria-pressed") !== "true";
   s.setAttribute("aria-pressed", String(on));
-  await Store.patchSettings({ [s.dataset.id]: on });
+  applicaAspetto(await Store.patchSettings({ [s.dataset.id]: on }));
+}
+$("#toggles-rec").addEventListener("click", cambiaInterruttore);
+$("#toggles-asp").addEventListener("click", cambiaInterruttore);
+
+/* La densità si vede subito: la libreria è già impaginata quando ci torni. */
+$("#density").addEventListener("click", async (e) => {
+  const b = e.target.closest(".seg-btn");
+  if (!b) return;
+  $$("#density .seg-btn").forEach((x) => x.setAttribute("aria-checked", String(x === b)));
+  applicaAspetto(await Store.patchSettings({ density: Number(b.dataset.density) }));
+});
+
+/* ── Siti dove non registro ── */
+
+async function zittisci(host) {
+  const s = await Store.settings();
+  const hosts = new Set(s.mutedHosts || []);
+  if (hosts.has(host)) return false;
+  hosts.add(host);
+  renderHosts([...hosts]);
+  await Store.patchSettings({ mutedHosts: [...hosts] });
+  return true;
+}
+
+$("#host-add").addEventListener("click", async () => {
+  const campo = $("#host-new");
+  /* Si accetta anche un indirizzo intero incollato: quel che serve è l'host. */
+  const host = campo.value.trim().toLowerCase()
+    .replace(/^https?:\/\//, "").replace(/^www\./, "").split("/")[0];
+  if (!host || !host.includes(".")) { flash("Serve un indirizzo, tipo raiplay.it."); return; }
+  campo.value = "";
+  if (await zittisci(host)) flash(`Su ${host} non registro più niente.`);
+  else flash(`${host} era già zittito.`);
+  await caricaImpostazioni();
+});
+
+$("#hosts").addEventListener("click", async (e) => {
+  const b = e.target.closest(".host-x");
+  if (!b) return;
+  const s = await Store.settings();
+  await Store.patchSettings({ mutedHosts: (s.mutedHosts || []).filter((h) => h !== b.dataset.host) });
+  await caricaImpostazioni();
+  flash(`Su ${b.dataset.host} registro di nuovo.`);
+});
+
+/* ── Modalità ospite ── */
+
+$("#guest-toggle").addEventListener("click", async function () {
+  const on = this.getAttribute("aria-pressed") !== "true";
+  await Store.patchSettings({ guest: on });
+  this.setAttribute("aria-pressed", String(on));
+  this.textContent = on ? "Esci dalla modalità ospite" : "Entra in modalità ospite";
+  flash(on ? "Ospite: non registro niente finché non esci." : "Torno a registrare quello che guardi.");
 });
 
 $("#api-key").addEventListener("change", async function () {
@@ -370,6 +581,9 @@ Store.watch(async () => {
 
 (async function avvio() {
   await Store.load();
+  /* L'aspetto si applica prima di disegnare: se no la prima scena parte
+     con la densità sbagliata e si riflowa sotto gli occhi. */
+  applicaAspetto(await Store.settings());
   await caricaLibreria();
   $("#titoli-count").textContent = libreria.length + " titoli";
   await mostra(location.hash.slice(1) || "stasera");

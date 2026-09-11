@@ -13,6 +13,7 @@ const VOTI = { "Amato": "AMATO", "Piaciuto": "PIACIUTO", "Nella media": "NELLA M
 
 async function visto(seen) {
   const settings = await Store.settings();
+  if (settings.guest) return { mount: false };          // ospite: non guarda e non compare
   if (!settings.autoRecord) return { mount: false };
   if ((settings.mutedHosts || []).includes(seen.host)) return { mount: false };
 
