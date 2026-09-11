@@ -51,11 +51,15 @@ const ok = (nome, condizione, dettaglio = "") => {
   console.log((condizione ? "  ok  " : "FALLITO") + "  " + nome + (dettaglio ? "  — " + dettaglio : ""));
 };
 
-const context = await chromium.launchPersistentContext(profilo, {
-  channel: "chromium",
+/* Di norma il Chromium di Playwright; con FOSFORO_CHROME si punta un binario già
+   sul disco. Le estensioni vogliono il browser intero: l'headless shell non le carica. */
+const avvio = {
+  ...(process.env.FOSFORO_CHROME ? { executablePath: process.env.FOSFORO_CHROME } : { channel: "chromium" }),
   headless: true,
   args: [`--disable-extensions-except=${EXT}`, `--load-extension=${EXT}`]
-});
+};
+
+const context = await chromium.launchPersistentContext(profilo, avvio);
 
 try {
   /* 1. Il service worker si sveglia da solo */
@@ -112,10 +116,7 @@ try {
 
   /* 7. Quel che è stato salvato resiste alla chiusura del browser */
   await context.close();
-  const context2 = await chromium.launchPersistentContext(profilo, {
-    channel: "chromium", headless: true,
-    args: [`--disable-extensions-except=${EXT}`, `--load-extension=${EXT}`]
-  });
+  const context2 = await chromium.launchPersistentContext(profilo, avvio);
   const sw2 = context2.serviceWorkers()[0] || await context2.waitForEvent("serviceworker", { timeout: 15000 });
   const id2 = new URL(sw2.url()).host;
   const dash2 = await context2.newPage();

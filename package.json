@@ -8,6 +8,7 @@
     "build": "node tools/bundle.mjs",
     "test": "node --test \"tools/test/**/*.test.mjs\"",
     "e2e": "node tools/e2e.mjs",
+    "e2e:dash": "node tools/e2e-dash.mjs",
     "icons": "node tools/icons.mjs",
     "pack": "node tools/pack.mjs",
     "shots": "node tools/shots.mjs"
