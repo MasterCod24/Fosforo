@@ -34,10 +34,17 @@ try {
   const errori = [];
   dash.on("pageerror", (e) => errori.push(String(e)));
 
-  /* ── 1. Aggiungere un titolo a mano ── */
+  /* ── 1. La libreria parte vuota, e lo dice ── */
   await dash.goto(url("libreria"));
-  await dash.locator("#wall .wall-card").first().waitFor({ timeout: 15000 });
+  /* Vuoto, `#wall` è una griglia senza contenuto: presente ma non visibile. */
+  await dash.locator("#wall").waitFor({ state: "attached", timeout: 15000 });
+  await dash.waitForTimeout(900);
   const primaDi = await dash.locator(".wall-card").count();
+  ok("all'installazione la libreria è vuota", primaDi === 0, `${primaDi} titoli`);
+  ok("e spiega come si riempie",
+    (await dash.locator("#wall-empty").textContent()).includes("parte vuota"));
+
+  /* ── 2. Aggiungere un titolo a mano ── */
 
   await dash.locator("#add-open").click();
   await dash.locator("#add-scrim .modal").waitFor({ timeout: 5000 });
@@ -78,6 +85,18 @@ try {
   await dash.locator("#add-confirm").click();
   await dash.waitForTimeout(700);
   ok("lo stesso titolo non entra due volte", (await dash.locator(".wall-card").count()) === dopo);
+
+  /* Il clic sulla locandina cambia il voto e lo dice: senza il toast
+     l'unica cosa che si muove è una scritta di 8px, e sembra rotto. */
+  const votoPrima = (await dash.locator(".wall-card").first().locator(".wall-state .mono").textContent()).trim();
+  await dash.locator(".wall-card").first().click();
+  await dash.waitForTimeout(600);
+  const votoDopo = (await dash.locator(".wall-card").first().locator(".wall-state .mono").textContent()).trim();
+  ok("il clic sulla locandina cambia il voto", votoPrima !== votoDopo, `${votoPrima} → ${votoDopo}`);
+  ok("e il toast dice che è successo qualcosa",
+    (await dash.locator("#toast").isVisible()) &&
+    (await dash.locator("#toast-text").textContent()).toLowerCase().includes(votoDopo.toLowerCase()));
+  await dash.waitForTimeout(2800);
 
   /* ── 2. Le schede delle impostazioni ── */
   await dash.goto(url("impostazioni"));

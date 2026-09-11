@@ -10,14 +10,21 @@ import { proposteLocali } from "./rank.js";
 export const MODEL = "claude-opus-5";
 
 /* La risposta non è testo libero: è questa forma, o non è. Così la schermata
-   Stasera non deve mai indovinare, e non c'è HTML del modello da eseguire. */
+   Stasera non deve mai indovinare, e non c'è HTML del modello da eseguire.
+
+   ATTENZIONE — gli structured output accettano un sottoinsieme di JSON Schema.
+   `maxItems`, `minimum` e `maximum` NON sono supportati e fanno fallire l'intera
+   richiesta con un 400 «For 'array' type…»; `minItems` vale solo 0 oppure 1.
+   I limiti veri stanno due posti più in là, dove contano: scritti nel prompt,
+   perché il modello li rispetti, e applicati in `pulisci()`, perché valgano
+   comunque. Lo schema dice la FORMA, non la misura.
+   Il test `tools/test/claude.test.mjs` non lascia rientrare queste chiavi. */
 const SCHEMA = {
   type: "object",
   properties: {
     proposte: {
       type: "array",
       minItems: 1,
-      maxItems: 6,
       items: {
         type: "object",
         properties: {
@@ -26,7 +33,7 @@ const SCHEMA = {
           genre: { type: "string" },
           runtime: { type: "string", description: "Per esempio «113 min»" },
           rating: { type: "string", description: "Per esempio «VM14» o «T»" },
-          aff: { type: "integer", minimum: 0, maximum: 100 },
+          aff: { type: "integer", description: "Da 0 a 100." },
           reason: {
             type: "string",
             description: "Due o tre frasi, in italiano, che citano i titoli in libreria da cui nasce il consiglio. Testo semplice, senza HTML."
@@ -34,15 +41,13 @@ const SCHEMA = {
           highlight: {
             type: "array",
             items: { type: "string" },
-            description: "I titoli citati dentro reason, così l'interfaccia li può mettere in evidenza.",
-            maxItems: 4
+            description: "I titoli citati dentro reason, così l'interfaccia li può mettere in evidenza. Al massimo quattro."
           },
           chips: {
             type: "array",
             items: { type: "string" },
             minItems: 1,
-            maxItems: 3,
-            description: "Etichette brevi maiuscole col peso, per esempio «CINEMA ITALIANO +34»."
+            description: "Da una a tre etichette brevi maiuscole col peso, per esempio «CINEMA ITALIANO +34»."
           }
         },
         required: ["title", "year", "genre", "runtime", "rating", "aff", "reason", "highlight", "chips"],
@@ -53,6 +58,10 @@ const SCHEMA = {
   required: ["proposte"],
   additionalProperties: false
 };
+
+/** Le chiavi che gli structured output rifiutano. Il test le cerca nello SCHEMA. */
+export const CHIAVI_VIETATE = ["maxItems", "minimum", "maximum", "minLength", "maxLength", "multipleOf", "pattern", "prefixItems"];
+export { SCHEMA };
 
 const SYSTEM = `Sei il motore di consiglio di Fosforo, un'estensione che ricorda cosa guarda una persona e le dice cosa guardare stasera.
 
@@ -113,11 +122,15 @@ export async function proposte(library, settings) {
 
     const testo = risposta.content.filter((b) => b.type === "text").map((b) => b.text).join("");
     const dati = JSON.parse(testo);
-    const items = (dati.proposte || []).map(pulisci);
+    /* Il tetto di sei sta qui, non nello schema: `maxItems` lo farebbe rifiutare. */
+    const items = (dati.proposte || []).slice(0, 6).map(pulisci);
 
     if (!items.length) throw new Error("nessuna proposta nella risposta");
     return { items, source: "claude", error: null };
   } catch (err) {
+    /* Nella barra ci sta poco e il messaggio viene tagliato: quello intero va in
+       console, se no un 400 che dice PERCHÉ resta illeggibile. */
+    console.error("[fosforo] Claude ha rifiutato la richiesta:", err);
     return { items: proposteLocali(library), source: "demo", error: messaggio(err) };
   }
 }

@@ -35,17 +35,37 @@ function empty() {
 let cache = null;
 const listeners = new Set();
 
-/** Alla prima apertura la libreria non è vuota: c'è il seme, così si vede com'è fatta. */
+/** La libreria parte VUOTA. Sedici titoli che l'utente non ha mai messo sono
+    indistinguibili da un errore: li legge come roba sua, e i primi consigli
+    nascono da gusti di qualcun altro. Il seme resta solo per la dimostrazione
+    fuori dall'estensione (`pages/dashboard.html` aperta a mano), dove non c'è
+    niente da sporcare e serve a far vedere com'è fatta. */
 async function load() {
   if (cache) return cache;
   const saved = await backend.read();
   if (saved) {
     cache = { ...empty(), ...saved, settings: { ...DEFAULTS, ...(saved.settings || {}) } };
+    await togliIlSeme();
   } else {
-    cache = { ...empty(), library: SEED.map((t) => ({ ...t })), seeded: true };
+    cache = { ...empty(), library: isExtension ? [] : SEED.map((t) => ({ ...t })), seeded: true };
     await backend.write(cache);
   }
   return cache;
+}
+
+/* Chi ha aperto Fosforo prima dell'11 set 2026 si è ritrovato sedici titoli in
+   libreria senza averli messi. Qui se ne vanno, una volta sola — ma solo quelli
+   MAI TOCCATI: se ne hai votato uno, quel voto è tuo e resta, e resta tutto
+   quello che hai aggiunto (ha `addedAt`). Si può togliere quando nessuno apre
+   più una copia installata prima di quella data. */
+async function togliIlSeme() {
+  if (!isExtension || cache.semeTolto) return;
+  const delSeme = new Set(SEED.map((t) => t.id));
+  cache.library = cache.library.filter(
+    (t) => !(delSeme.has(t.id) && !t.addedAt && !t.votedAt)
+  );
+  cache.semeTolto = true;
+  await backend.write(cache);
 }
 
 async function commit() {

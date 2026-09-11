@@ -4,7 +4,7 @@
 
 import { test, beforeEach } from "node:test";
 import assert from "node:assert/strict";
-import { proposte, MODEL } from "../../extension/lib/claude.js";
+import { proposte, MODEL, SCHEMA, CHIAVI_VIETATE } from "../../extension/lib/claude.js";
 import { SEED } from "../../extension/lib/seed.js";
 
 let richiesta = null;
@@ -108,4 +108,58 @@ test("l'HTML che arrivasse dal modello non entra nella pagina", async () => {
   assert.doesNotMatch(p.reason, /[<>]/);
   assert.match(p.reason, /testo/);
   assert.equal(p.aff, 100, "l'affinità resta dentro la scala");
+});
+
+/* ── Lo schema deve restare dentro quel che gli structured output accettano ──
+   Il 400 «output_config.format.schema: For 'array' type…» è arrivato in faccia a
+   un utente vero: `maxItems`, `minimum` e `maximum` non sono supportati, e
+   `minItems` vale solo 0 o 1. Non si vede provando la forma della richiesta —
+   la richiesta parte, è il server che la rifiuta — quindi si controlla qui. */
+
+test("lo schema non usa chiavi che gli structured output rifiutano", () => {
+  const trovate = [];
+  (function cerca(nodo, dove) {
+    if (!nodo || typeof nodo !== "object") return;
+    for (const [k, v] of Object.entries(nodo)) {
+      if (CHIAVI_VIETATE.includes(k)) trovate.push(`${dove}.${k}`);
+      cerca(v, `${dove}.${k}`);
+    }
+  })(SCHEMA, "schema");
+
+  assert.deepEqual(trovate, [], "chiavi non supportate nello schema: " + trovate.join(", "));
+});
+
+test("minItems c'è solo con 0 o 1, gli unici valori ammessi", () => {
+  const valori = [];
+  (function cerca(nodo) {
+    if (!nodo || typeof nodo !== "object") return;
+    if ("minItems" in nodo) valori.push(nodo.minItems);
+    Object.values(nodo).forEach(cerca);
+  })(SCHEMA);
+
+  for (const v of valori) assert.ok(v === 0 || v === 1, `minItems: ${v} non è ammesso`);
+});
+
+test("i limiti tolti dallo schema sono applicati lo stesso sulla risposta", async () => {
+  /* Il modello manda otto proposte, un'affinità fuori scala e liste troppo lunghe:
+     lo schema non lo impedisce più, quindi deve reggere il codice. */
+  const troppe = Array.from({ length: 8 }, (_, i) => ({
+    title: "Titolo " + i, year: "1970", genre: "Drammatico", runtime: "100 min", rating: "T",
+    aff: 140, reason: "Perché sì.",
+    highlight: ["a", "b", "c", "d", "e", "f"],
+    chips: ["UNO +1", "DUE +2", "TRE +3", "QUATTRO +4"]
+  }));
+  rispondi({
+    id: "msg_2", type: "message", role: "assistant", model: MODEL,
+    stop_reason: "end_turn", stop_sequence: null,
+    usage: { input_tokens: 10, output_tokens: 10 },
+    content: [{ type: "text", text: JSON.stringify({ proposte: troppe }) }]
+  });
+
+  const esito = await proposte(SEED, { anthropicKey: "sk-ant-finta" });
+  assert.equal(esito.source, "claude");
+  assert.equal(esito.items.length, 6, "al massimo sei proposte");
+  assert.equal(esito.items[0].aff, 100, "l'affinità resta in scala");
+  assert.equal(esito.items[0].highlight.length, 4, "al massimo quattro titoli citati");
+  assert.equal(esito.items[0].chips.length, 3, "al massimo tre etichette");
 });

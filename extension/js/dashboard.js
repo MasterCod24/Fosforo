@@ -217,7 +217,12 @@ function renderWall() {
       <span class="wall-meta">${esc([t.year, t.director || (t.serie ? "Serie" : null)].filter(Boolean).join(" · "))}</span>
     </button>`).join("");
 
+  /* Libreria vuota e ricerca a vuoto sono due cose diverse: la prima è l'inizio,
+     e deve dire cosa fare, non sembrare un errore. */
   $("#wall-empty").hidden = righe.length > 0;
+  $("#wall-empty").textContent = libreria.length === 0
+    ? "La libreria è tua e parte vuota. Guarda qualcosa su un sito di streaming e Fosforo se ne accorge, oppure aggiungi un titolo con il pulsante qui sopra."
+    : "Nessun titolo per questa ricerca.";
 
   const votati = libreria.filter((t) => ["AMATO", "PIACIUTO", "NELLA MEDIA", "NO"].includes(t.state)).length;
   const lista = libreria.filter((t) => t.state === "IN LISTA").length;
@@ -236,7 +241,11 @@ $("#lib-filters").addEventListener("click", (e) => {
 });
 $("#lib-search").addEventListener("input", renderWall);
 
-/* Un clic sulla locandina cambia il voto: il punto e la scritta si aggiornano subito. */
+/* Un clic sulla locandina cambia il voto. Quel che cambia a schermo è una
+   scritta di 8px in fondo alla locandina: troppo poco per capire di aver fatto
+   qualcosa, ed è per questo che sembra che il clic non funzioni. Il toast lo
+   dice a voce alta — è un cerotto, finché il gesto non viene ridisegnato:
+   cliccare una locandina dovrebbe aprire il titolo, non votarlo di nascosto. */
 $("#wall").addEventListener("click", async (e) => {
   const card = e.target.closest(".wall-card");
   if (!card) return;
@@ -246,6 +255,7 @@ $("#wall").addEventListener("click", async (e) => {
   await Store.vote(t.id, t.state);
   renderFiltri();
   renderWall();
+  flash(`«${t.title}»: ${t.state.toLowerCase()}. Clicca ancora per cambiare.`);
 });
 
 /* ─────────────────────── Aggiungi un titolo a mano ─── */

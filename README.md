@@ -6,7 +6,7 @@ Estensione che ricorda cosa guardi e ti dice cosa guardare stasera.
 
 ## ⬇︎ Scarica e installa
 
-**[Scarica fosforo-2.6.0.zip](https://github.com/MasterCod24/Fosforo/releases/latest/download/fosforo-2.6.0.zip)** — 207 KB, è l'unico file che ti serve.
+**[Scarica fosforo-2.6.0.zip](https://github.com/MasterCod24/Fosforo/releases/latest/download/fosforo-2.6.0.zip)** — 208 KB, è l'unico file che ti serve.
 
 ### Chrome, Edge, Arc, Brave
 
@@ -40,6 +40,10 @@ per provarla no.)
 Apri la dashboard → **Impostazioni** e incolla la tua **chiave di Claude** (`sk-ant-…`):
 è quella che fa scrivere i consigli. Senza, Fosforo funziona lo stesso in modalità
 demo — registra quel che guardi e lo ordina da solo, e te lo dice in chiaro.
+
+**La libreria parte vuota.** Si riempie da sola guardando qualcosa, oppure con
+«＋ Aggiungi un titolo». Nessun titolo di esempio: quel che c'è dentro l'hai messo tu,
+e i consigli nascono dai tuoi gusti e non da quelli di qualcun altro.
 
 ---
 
@@ -144,7 +148,8 @@ Provato davvero, offline, in Chromium con l'estensione caricata:
   pagina video, monta l'overlay, «È giusto» mette il titolo in libreria **con la
   locandina presa dalla pagina**, i conteggi si aggiornano, e tutto è ancora lì dopo
   un riavvio del browser.
-- **La dashboard** (`npm run e2e:dash`, 25 passi) — aggiungere un titolo a mano lo fa
+- **La dashboard** (`npm run e2e:dash`, 29 passi) — la libreria parte vuota e dice
+  come si riempie, aggiungere un titolo a mano lo fa
   comparire in cima alla libreria con lo stato scelto, lo stesso titolo due volte non
   fa due righe, il toast se ne va da solo, le quattro schede mostrano una cosa alla
   volta, un sito zittito **finisce davvero in `chrome.storage.local`**, la modalità
@@ -152,11 +157,13 @@ Provato davvero, offline, in Chromium con l'estensione caricata:
   muro, le animazioni spente non lasciano nessuna animazione attiva. Zero errori
   JavaScript in tutta la sessione.
 
-Tutti e 36 i passi sono stati rifatti **sulla cartella scompattata dallo zip** qui
+Tutti e 40 i passi sono stati rifatti **sulla cartella scompattata dallo zip** qui
 sopra, non sui sorgenti: quel che scarichi è esattamente quel che è stato provato. La
 chiamata a Claude è verificata nella forma — modello, schema della risposta,
 intestazioni, compresa `anthropic-dangerous-direct-browser-access` — con la rete finta
-(`npm test`, 19 test).
+(`npm test`, 22 test) — e tre di quei test tengono lo schema dentro il sottoinsieme
+di JSON Schema che gli structured output accettano, perché `maxItems` e `minimum`
+non sono supportati e fanno fallire l'intera richiesta con un 400.
 
 Se Playwright non ha il suo Chromium, `FOSFORO_CHROME=/percorso/al/binario` fa usare
 quello che hai già: serve il browser intero, l'headless shell non carica le estensioni.
@@ -172,5 +179,5 @@ quello che hai già: serve il browser intero, l'headless shell non carica le est
 
 Restano in `chrome.storage.local`, sul tuo computer. Niente account, niente
 sincronizzazione, nessun server nostro. **Esporta** te li dà in JSON; **Cancella
-tutto** li cancella davvero, seme compreso. I siti su cui hai detto «non registrare»
+tutto** li cancella davvero. I siti su cui hai detto «non registrare»
 non fanno più montare niente.
