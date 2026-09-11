@@ -6,7 +6,7 @@ Estensione che ricorda cosa guardi e ti dice cosa guardare stasera.
 
 ## ⬇︎ Scarica e installa
 
-**[Scarica fosforo-2.6.0.zip](https://github.com/MasterCod24/fosforo/raw/main/dist/fosforo-2.6.0.zip)** — 202 KB, è l'unico file che ti serve.
+**[Scarica fosforo-2.6.0.zip](https://github.com/MasterCod24/fosforo/raw/main/dist/fosforo-2.6.0.zip)** — 207 KB, è l'unico file che ti serve.
 
 ### Chrome, Edge, Arc, Brave
 
@@ -52,6 +52,27 @@ L'interfaccia è la direzione **SALA**: la locandina è la superficie, l'interfa
 vetro che ci galleggia sopra. Grafite `#0E1012`, Helvetica bianca, forme a pillola,
 zero cromature e zero ciano. Gli artboard da cui nasce sono in [`design/`](design/).
 
+## Cosa si fa dentro
+
+**Stasera** — un titolo alla volta, la locandina a tutta altezza, l'affinità che sale
+da zero. Le altre cinque proposte sono il nastro in basso; «Rigenera» le rifà.
+
+**Libreria** — il muro di locandine. Un clic su una locandina cambia il voto; la
+ricerca cerca per titolo, regista e anno. **＋ Aggiungi un titolo** serve quando
+Fosforo non ha visto passare un film: basta il titolo, anno e tipo si correggono dopo.
+
+**Impostazioni** — quattro schede, raggruppate per conseguenza e non per categoria:
+
+| Scheda | Cosa c'è |
+|---|---|
+| **Consigli** | la chiave di Claude e da dove arrivano le locandine |
+| **Registrazione** | i tre interruttori, i siti dove non registrare, la modalità ospite |
+| **Aspetto** | quanti titoli per riga, locandina grande su Stasera, animazioni, lingua |
+| **I tuoi dati** | quanto pesa quel che hai, esporta, cancella tutto |
+
+La **modalità ospite** è un interruttore solo: finché è acceso il service worker non
+registra niente e la pillola non compare. Quel che è già in libreria resta dov'è.
+
 ## Le due chiavi
 
 Stanno in **Impostazioni**, dentro la dashboard, e non escono dal tuo computer: le
@@ -91,7 +112,7 @@ extension/
   lib/title.js         come si riconosce che due nomi sono lo stesso film
   content/detect.js    riconosce il titolo sulla pagina
   content/overlay.*    la pillola di vetro sul player
-  pages/dashboard.html Stasera · Libreria · Impostazioni
+  pages/dashboard.html Stasera · Libreria · Impostazioni (quattro schede)
   pages/brand.html     il foglio del marchio (non si spedisce: genera le icone)
   vendor/anthropic.js  SDK ufficiale impacchettato — rigenerato da `npm run build`
 ```
@@ -106,6 +127,7 @@ npm install
 npm run build   # reimpacchetta l'SDK Anthropic in extension/vendor/
 npm test        # logica: titoli, locandine, chiamata a Claude (rete finta)
 npm run e2e     # carica l'estensione vera in Chromium su una pagina video finta
+npm run e2e:dash # la dashboard in Chromium: aggiungi un titolo, schede, densità, ospite
 npm run icons   # rigenera le icone dal marchio
 npm run shots   # fotografa le cinque superfici a 1160px
 npm run pack    # rifà dist/fosforo-2.6.0.zip, il pacchetto da scaricare
@@ -116,14 +138,28 @@ quel che si scarica dal link in cima non è quel che c'è nel repo.
 
 ## Cosa è stato provato, e cosa no
 
-Provato davvero, offline: l'estensione caricata in Chromium riconosce il titolo dal
-JSON-LD di una pagina video, monta l'overlay, «È giusto» mette il titolo in libreria
-**con la locandina presa dalla pagina**, i conteggi si aggiornano, e tutto è ancora lì
-dopo un riavvio del browser (`npm run e2e`, 11 passi). Gli stessi 11 passi sono stati
-rifatti **sulla cartella scompattata dallo zip** qui sopra, non sui sorgenti: quel che
-scarichi è esattamente quel che è stato provato. La chiamata a Claude è
-verificata nella forma — modello, schema della risposta, intestazioni, compresa
-`anthropic-dangerous-direct-browser-access` — con la rete finta (`npm test`, 19 test).
+Provato davvero, offline, in Chromium con l'estensione caricata:
+
+- **La catena** (`npm run e2e`, 11 passi) — riconosce il titolo dal JSON-LD di una
+  pagina video, monta l'overlay, «È giusto» mette il titolo in libreria **con la
+  locandina presa dalla pagina**, i conteggi si aggiornano, e tutto è ancora lì dopo
+  un riavvio del browser.
+- **La dashboard** (`npm run e2e:dash`, 25 passi) — aggiungere un titolo a mano lo fa
+  comparire in cima alla libreria con lo stato scelto, lo stesso titolo due volte non
+  fa due righe, il toast se ne va da solo, le quattro schede mostrano una cosa alla
+  volta, un sito zittito **finisce davvero in `chrome.storage.local`**, la modalità
+  ospite accende il flag che il service worker legge, la densità cambia la colonna del
+  muro, le animazioni spente non lasciano nessuna animazione attiva. Zero errori
+  JavaScript in tutta la sessione.
+
+Tutti e 36 i passi sono stati rifatti **sulla cartella scompattata dallo zip** qui
+sopra, non sui sorgenti: quel che scarichi è esattamente quel che è stato provato. La
+chiamata a Claude è verificata nella forma — modello, schema della risposta,
+intestazioni, compresa `anthropic-dangerous-direct-browser-access` — con la rete finta
+(`npm test`, 19 test).
+
+Se Playwright non ha il suo Chromium, `FOSFORO_CHROME=/percorso/al/binario` fa usare
+quello che hai già: serve il browser intero, l'headless shell non carica le estensioni.
 
 **Non** provato, perché va provato sul tuo Mac con le tue chiavi:
 
