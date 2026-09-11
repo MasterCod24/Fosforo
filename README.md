@@ -6,7 +6,7 @@ Estensione che ricorda cosa guardi e ti dice cosa guardare stasera.
 
 ## ⬇︎ Scarica e installa
 
-**[Scarica fosforo-2.6.0.zip](https://github.com/MasterCod24/Fosforo/raw/sala-liquid-glass/dist/fosforo-2.6.0.zip)** — 207 KB, è l'unico file che ti serve.
+**[Scarica fosforo-2.6.0.zip](https://github.com/MasterCod24/Fosforo/releases/latest/download/fosforo-2.6.0.zip)** — 207 KB, è l'unico file che ti serve.
 
 ### Chrome, Edge, Arc, Brave
 
