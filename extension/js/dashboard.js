@@ -230,9 +230,46 @@ const FILTRI = [
   { label: "In lista", match: (t) => t.state === "IN LISTA" },
   { label: "Serie", match: (t) => t.serie }
 ];
-const CICLO = ["AMATO", "PIACIUTO", "NELLA MEDIA", "NO", "DA VOTARE"];
-const dotFor = (s) => s === "AMATO" ? "#f2f4f6" : s === "PIACIUTO" ? "rgba(242,244,246,.7)"
-  : s === "IN LISTA" ? "rgba(242,244,246,.45)" : "rgba(242,244,246,.3)";
+/* Le quattro posizioni, scritte per esteso: niente da ricordare e niente da
+   scoprire. «Da votare» e «In lista» non sono voti — sono l'assenza di un voto. */
+const VOTI = [
+  ["AMATO", "Amato"],
+  ["PIACIUTO", "Piaciuto"],
+  ["NELLA MEDIA", "Nella media"],
+  ["NO", "No"]
+];
+const etichetta = (stato) => (VOTI.find(([v]) => v === stato) || [null, stato])[1];
+const votato = (stato) => VOTI.some(([v]) => v === stato);
+
+/* Gli id dei titoli contengono `|`, punti e spazi: in un selettore vanno citati. */
+const cssId = (id) => String(id).replace(/["\\]/g, "\\$&");
+
+/** Una locandina del muro. `prima` è valorizzato solo per i quattro secondi
+    successivi a un voto, quando al posto delle pastiglie c'è la via d'uscita. */
+function cardHTML(t, n, prima = null) {
+  const fresco = prima != null;
+  const sfondo = t.poster
+    ? ` style="background-image: url('${esc(t.poster)}'); background-size: cover; background-position: center;"`
+    : "";
+
+  const segno = votato(t.state) ? `
+      <span class="wall-badge">
+        <span class="wall-dot"></span>
+        <span class="mono">${esc(etichetta(t.state))}</span>
+      </span>` : "";
+
+  const sotto = sottoHTML(t, prima);
+
+  return `
+    <div class="wall-card${fresco ? " is-fresh" : ""}" data-id="${esc(t.id)}" style="animation-delay: ${140 + n * 44}ms;">
+      <span class="wall-poster"${sfondo}>
+        <button class="wall-open" type="button">Apri la scheda</button>
+        ${segno}${sotto}
+      </span>
+      <button class="wall-title" type="button">${esc(t.title)}</button>
+      <span class="wall-meta">${esc([t.year, t.director || (t.serie ? "Serie" : null)].filter(Boolean).join(" · "))}</span>
+    </div>`;
+}
 
 let filtro = 0;
 let libreria = [];
@@ -256,24 +293,15 @@ function renderWall() {
     .filter(FILTRI[filtro].match)
     .filter((t) => !q || (t.title + " " + (t.director || "") + " " + (t.year || "")).toLowerCase().includes(q));
 
-  $("#wall").innerHTML = righe.map((t, n) => `
-    <button class="wall-card" type="button" data-id="${esc(t.id)}" title="Clic per cambiare il voto" style="animation-delay: ${140 + n * 44}ms;">
-      <span class="wall-poster"${t.poster ? ` style="background-image: url('${esc(t.poster)}'); background-size: cover; background-position: center;"` : ""}>
-        <span class="wall-state">
-          <span class="wall-dot" style="background: ${dotFor(t.state)}"></span>
-          <span class="mono">${esc(t.state)}</span>
-        </span>
-      </span>
-      <span class="wall-title">${esc(t.title)}</span>
-      <span class="wall-meta">${esc([t.year, t.director || (t.serie ? "Serie" : null)].filter(Boolean).join(" · "))}</span>
-    </button>`).join("");
+  $("#wall").innerHTML = righe.map((t, n) => cardHTML(t, n)).join("");
 
-  /* Libreria vuota e ricerca a vuoto sono due cose diverse: la prima è l'inizio,
-     e deve dire cosa fare, non sembrare un errore. */
-  $("#wall-empty").hidden = righe.length > 0;
-  $("#wall-empty").textContent = libreria.length === 0
-    ? "La libreria è tua e parte vuota. Guarda qualcosa su un sito di streaming e Fosforo se ne accorge, oppure aggiungi un titolo con il pulsante qui sopra."
-    : "Nessun titolo per questa ricerca.";
+  /* Tre stati, non due: il muro pieno, la ricerca a vuoto (una riga) e la
+     libreria vuota del tutto, che è il primo schermo e merita una pagina sua. */
+  const primoGiorno = libreria.length === 0;
+  $("#vuoto").hidden = !primoGiorno;
+  $("#wall-empty").hidden = primoGiorno || righe.length > 0;
+  $(".lib-head").hidden = primoGiorno;
+  $("#lib-filters").hidden = primoGiorno;
 
   const votati = libreria.filter((t) => ["AMATO", "PIACIUTO", "NELLA MEDIA", "NO"].includes(t.state)).length;
   const lista = libreria.filter((t) => t.state === "IN LISTA").length;
@@ -282,6 +310,14 @@ function renderWall() {
     ? `${righe.length} ${righe.length === 1 ? "titolo" : "titoli"} su ${libreria.length}`
     : `${libreria.length} titoli · ${votati} votati · ${lista} in lista · ${daVotare} da confermare`;
 }
+
+/* Le due uscite dalla libreria vuota: il modale che c'è già, e le Impostazioni
+   alla scheda giusta — non genericamente «Impostazioni». */
+$("#vuoto-add").addEventListener("click", apriAdd);
+$("#vuoto-muti").addEventListener("click", () => {
+  location.hash = "impostazioni";
+  setTimeout(() => $('.set-menu-item[data-tab="registrazione"]').click(), 60);
+});
 
 $("#lib-filters").addEventListener("click", (e) => {
   const b = e.target.closest(".filter");
@@ -292,22 +328,85 @@ $("#lib-filters").addEventListener("click", (e) => {
 });
 $("#lib-search").addEventListener("input", renderWall);
 
-/* Un clic sulla locandina cambia il voto. Quel che cambia a schermo è una
-   scritta di 8px in fondo alla locandina: troppo poco per capire di aver fatto
-   qualcosa, ed è per questo che sembra che il clic non funzioni. Il toast lo
-   dice a voce alta — è un cerotto, finché il gesto non viene ridisegnato:
-   cliccare una locandina dovrebbe aprire il titolo, non votarlo di nascosto. */
+/* ── Due bersagli, nessun ciclo (3a) ──
+   Il ciclo a rotazione era il difetto di fondo: un clic sulla locandina
+   cambiava voto passando al successivo di una lista che nessuno conosceva.
+   Ora la locandina apre la scheda, e il voto si dà per nome. */
 $("#wall").addEventListener("click", async (e) => {
   const card = e.target.closest(".wall-card");
   if (!card) return;
   const t = libreria.find((x) => x.id === card.dataset.id);
   if (!t) return;
-  t.state = CICLO[(CICLO.indexOf(t.state) + 1) % CICLO.length];
-  await Store.vote(t.id, t.state);
-  renderFiltri();
-  renderWall();
-  flash(`«${t.title}»: ${t.state.toLowerCase()}. Clicca ancora per cambiare.`);
+
+  const annulla = e.target.closest(".wall-undo");
+  if (annulla) {
+    await vota(t, annulla.dataset.prima || "DA VOTARE", { silenzioso: true });
+    return;
+  }
+
+  const pastiglia = e.target.closest(".wall-vote");
+  if (pastiglia) {
+    await vota(t, pastiglia.dataset.voto);
+    return;
+  }
+
+  /* Il disegno dice «la locandina intera apre», ma è disegnato su locandine da
+     164px: nel muro vero la colonna è 119px e il pannello del voto copre il
+     centro dell'immagine. I bersagli d'apertura sono quindi la banda in alto —
+     che il disegno stesso etichetta «Apri la scheda» — e il titolo sotto. */
+  apriScheda(t);
 });
+
+/* Il voto tocca una sola locandina: ridisegnare tutto il muro spegnerebbe il
+   passaggio del mouse e porterebbe via «Annulla» prima che si possa leggerlo. */
+let frescoTimer = null;
+async function vota(t, nuovo, { silenzioso = false } = {}) {
+  const prima = t.state;
+  t.state = nuovo;
+  await Store.vote(t.id, nuovo);
+  renderFiltri();
+  aggiornaCard(t, silenzioso ? null : prima);
+  if (!silenzioso) flash(`«${t.title}»: ${etichetta(nuovo).toLowerCase()}.`);
+  if (schedaAperta && schedaAperta.id === t.id) renderScheda(t);
+}
+
+/** Il blocco in fondo alla locandina: le pastiglie, o «Salvato» con la via d'uscita. */
+function sottoHTML(t, prima = null) {
+  if (prima != null) {
+    return `<span class="wall-saved">Salvato<button class="wall-undo" type="button" data-prima="${esc(prima)}">Annulla</button></span>`;
+  }
+  return `<span class="wall-votes">${VOTI.map(([v, l]) =>
+    `<button class="wall-vote" type="button" data-voto="${v}" aria-pressed="${t.state === v}">${l}</button>`).join("")}</span>`;
+}
+
+/** Aggiorna una sola locandina SENZA ricrearla.
+    Sostituire il nodo funzionava, ma buttava via l'elemento che stava sotto il
+    mouse: un clic partito un attimo prima finiva su un nodo già staccato dal
+    DOM e si perdeva. Qui si cambiano solo i pezzi che cambiano. */
+function aggiornaCard(t, prima) {
+  const card = $(`.wall-card[data-id="${cssId(t.id)}"]`);
+  if (!card) return;
+
+  card.classList.toggle("is-fresh", prima != null);
+
+  const segno = $(".wall-badge", card);
+  if (votato(t.state)) {
+    const html = `<span class="wall-dot"></span><span class="mono">${esc(etichetta(t.state))}</span>`;
+    if (segno) segno.innerHTML = html;
+    else $(".wall-poster", card).insertAdjacentHTML("beforeend", `<span class="wall-badge">${html}</span>`);
+  } else if (segno) {
+    segno.remove();
+  }
+
+  const sotto = $(".wall-votes", card) || $(".wall-saved", card);
+  if (sotto) sotto.outerHTML = sottoHTML(t, prima);
+
+  clearTimeout(frescoTimer);
+  if (prima != null) {
+    /* «Annulla» vive quattro secondi, come dice il disegno. Poi torna il voto. */
+    frescoTimer = setTimeout(() => aggiornaCard(t, null), 4000);
+  }
+}
 
 /* ─────────────────────── Aggiungi un titolo a mano ─── */
 
@@ -360,6 +459,7 @@ $("#add-cancel").addEventListener("click", chiudiAdd);
 /* Il clic sullo sfondo chiude; quello sulla scheda no. */
 scrim.addEventListener("click", (e) => { if (e.target === scrim) chiudiAdd(); });
 document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && !scrimScheda.hidden) chiudiScheda();
   if (e.key === "Escape" && !scrim.hidden) chiudiAdd();
   if (e.key === "Enter" && !scrim.hidden && !$("#add-confirm").disabled) confermaAdd();
 });
@@ -377,10 +477,16 @@ async function confermaAdd() {
   const state = segScelto("#add-state").state || "IN LISTA";
 
   const id = idFor(title, year);
+  /* Se il titolo c'è già e l'hai votato, quel voto è tuo: riaggiungerlo non lo
+     riporta a «in lista». Lo stato scelto nel modale vale per i titoli nuovi. */
+  const esistente = libreria.find((x) => x.id === id);
   await Store.remember({
-    id, title, year, serie, state,
-    director: null, poster: null, host: null,
-    addedAt: Date.now()
+    id, title, year, serie,
+    state: esistente && votato(esistente.state) ? esistente.state : state,
+    director: esistente ? esistente.director : null,
+    poster: esistente ? esistente.poster : null,
+    host: esistente ? esistente.host : null,
+    addedAt: esistente ? esistente.addedAt : Date.now()
   });
 
   chiudiAdd();
@@ -398,6 +504,87 @@ async function confermaAdd() {
 }
 
 $("#add-confirm").addEventListener("click", confermaAdd);
+
+/* ─────────────────────────── La scheda del titolo ─── */
+
+/* Quel che il clic sulla locandina promette. Mostra SOLO dati che esistono:
+   una riga senza valore non compare affatto, invece di stare lì con un trattino.
+   Niente trama e niente cast: Fosforo non li ha e non li inventa. */
+
+let schedaAperta = null;
+const scrimScheda = $("#scheda-scrim");
+
+const quando = (ms) => {
+  if (!ms) return null;
+  const d = new Date(ms);
+  return d.toLocaleDateString("it-IT", { day: "numeric", month: "long", year: "numeric" });
+};
+
+function renderScheda(t) {
+  $("#scheda-occhio").textContent = votato(t.state) ? "In libreria · votato" : "In libreria";
+  $("#scheda-titolo").textContent = t.title;
+  $("#scheda-meta").textContent =
+    [t.year, t.director, t.serie ? "Serie" : "Film"].filter(Boolean).join(" · ");
+
+  const img = $("#scheda-img");
+  const tex = $("#scheda-tex");
+  if (t.poster) { img.src = ingrandita(t.poster); img.hidden = false; tex.hidden = true; }
+  else { img.removeAttribute("src"); img.hidden = true; tex.hidden = false; }
+
+  $("#scheda-voti").innerHTML = VOTI.map(([v, l]) =>
+    `<button class="voto" type="button" data-voto="${v}" aria-pressed="${t.state === v}">${l}</button>`
+  ).join("") +
+    (votato(t.state) ? '<button class="voto" type="button" data-voto="DA VOTARE">Togli il voto</button>' : "");
+
+  const righe = [
+    ["Stato", votato(t.state) ? etichetta(t.state) : t.state === "IN LISTA" ? "In lista per stasera" : "Non votato"],
+    ["Riconosciuto su", t.host],
+    ["In libreria da", quando(t.addedAt)],
+    ["Votato il", quando(t.votedAt)]
+  ].filter(([, v]) => v);
+
+  $("#scheda-dati").innerHTML = righe
+    .map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("");
+}
+
+function apriScheda(t) {
+  schedaAperta = t;
+  renderScheda(t);
+  scrimScheda.hidden = false;
+  $("#scheda-close").focus();
+}
+
+function chiudiScheda() {
+  scrimScheda.hidden = true;
+  schedaAperta = null;
+}
+
+$("#scheda-close").addEventListener("click", chiudiScheda);
+scrimScheda.addEventListener("click", (e) => { if (e.target === scrimScheda) chiudiScheda(); });
+
+$("#scheda-voti").addEventListener("click", async (e) => {
+  const b = e.target.closest(".voto");
+  if (!b || !schedaAperta) return;
+  await vota(schedaAperta, b.dataset.voto, { silenzioso: true });
+});
+
+/* Come su Stasera: senza l'id TMDB non esiste un'API del trailer, e la ricerca
+   è il gesto che faresti a mano. */
+$("#scheda-trailer").addEventListener("click", () => {
+  if (!schedaAperta) return;
+  const q = encodeURIComponent([schedaAperta.title, schedaAperta.year, "trailer italiano"].filter(Boolean).join(" "));
+  window.open("https://www.youtube.com/results?search_query=" + q, "_blank", "noopener");
+});
+
+$("#scheda-togli").addEventListener("click", async () => {
+  if (!schedaAperta) return;
+  const t = schedaAperta;
+  if (!window.confirm(`Togliere «${t.title}» dalla libreria? Non verrà più riproposto.`)) return;
+  await Store.forget(t.id);
+  chiudiScheda();
+  await caricaLibreria();
+  flash(`«${t.title}» non è più in libreria.`);
+});
 
 /* ═══════════════════════════ IMPOSTAZIONI ═══ */
 

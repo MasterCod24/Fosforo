@@ -328,16 +328,127 @@ body[data-density="10"] .wall { --col-min: 92px; }
   background-color: var(--pozzetto);
   background-image: repeating-linear-gradient(122deg, rgba(255, 255, 255, .04) 0 8px, rgba(255, 255, 255, 0) 8px 16px);
 }
-/* Il voto vive sulla locandina, non accanto */
-.wall-state {
-  position: absolute; left: 0; right: 0; bottom: 0;
-  padding: 22px 10px 9px;
-  background: linear-gradient(transparent, rgba(14, 16, 18, .9));
-  display: flex; align-items: center; gap: 6px;
+/* ══ 3a PASTIGLIE AL PASSAGGIO ══
+   Due bersagli distinti: la locandina apre la scheda, le pastiglie votano.
+   A riposo il muro resta pulito — il segno c'è solo sui titoli già votati,
+   perché «da votare» non è un'informazione, è l'assenza di una. */
+
+/* Il segno: pillola di vetro in alto a destra, solo se un voto c'è */
+.wall-badge {
+  position: absolute;
+  top: 9px; right: 9px;
+  display: flex; align-items: center; gap: 5px;
+  padding: 4px 8px;
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, .2);
+  background: linear-gradient(158deg, rgba(255, 255, 255, .18), rgba(20, 23, 25, .55));
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
 }
-.wall-dot { width: 5px; height: 5px; border-radius: 50%; }
-.wall-state .mono { font-size: 8px; letter-spacing: .14em; color: rgba(242, 244, 246, .72); }
-.wall-title { display: block; margin-top: 9px; font-size: 12px; font-weight: 500; line-height: 1.32; color: var(--inchiostro); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wall-badge .mono { font-size: 8px; letter-spacing: .14em; color: var(--inchiostro); }
+.wall-badge .wall-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--inchiostro); }
+/* Appena votato il segno diventa pieno: si vede da lontano che è cambiato. */
+.wall-card.is-fresh .wall-badge { border-color: transparent; background: var(--inchiostro); }
+.wall-card.is-fresh .wall-badge .mono { color: var(--fondo); }
+.wall-card.is-fresh .wall-badge .wall-dot { display: none; }
+
+/* Il bersaglio per aprire, in alto: compare col passaggio */
+.wall-open {
+  position: absolute; left: 0; right: 0; top: 0;
+  display: flex; align-items: center; justify-content: center;
+  padding: 11px 0;
+  border: 0;
+  font-family: inherit;
+  cursor: pointer;
+  background: linear-gradient(rgba(14, 16, 18, .88), transparent);
+  font-size: 11.5px; font-weight: 500; color: var(--ink-full);
+  opacity: 0;
+  transition: opacity 200ms var(--ease);
+  pointer-events: none;
+}
+
+/* La lastra col voto, che sale dal basso */
+.wall-votes {
+  position: absolute;
+  left: 7px; right: 7px; bottom: 7px;
+  padding: 7px;
+  border-radius: 13px;
+  border: 1px solid rgba(255, 255, 255, .2);
+  background: linear-gradient(158deg, rgba(255, 255, 255, .16), rgba(28, 32, 35, .6) 40%, rgba(20, 23, 25, .72));
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  backdrop-filter: blur(28px) saturate(190%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .32), 0 14px 30px -14px rgba(0, 0, 0, .9);
+  display: flex; flex-direction: column; gap: 4px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 200ms var(--ease), transform 240ms var(--ease);
+  pointer-events: none;
+}
+.wall-vote {
+  display: block;
+  padding: 7px 10px;
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, .16);
+  background: transparent;
+  color: rgba(242, 244, 246, .82);
+  font-family: inherit;
+  font-size: 10.5px;
+  text-align: left;
+  cursor: pointer;
+}
+.wall-vote:hover { border-color: rgba(242, 244, 246, .5); color: var(--ink-full); }
+/* La posizione attuale è quella bianca */
+.wall-vote[aria-pressed="true"] {
+  border-color: transparent;
+  background: linear-gradient(180deg, #ffffff, #e5e9ec);
+  color: var(--fondo);
+  font-weight: 500;
+}
+
+/* Col passaggio — o col fuoco da tastiera, che il disegno non prevedeva ma
+   senza il quale il voto è raggiungibile solo con un mouse. */
+.wall-card:hover .wall-open,
+.wall-card:focus-within .wall-open,
+.wall-card:hover .wall-votes,
+.wall-card:focus-within .wall-votes { opacity: 1; transform: none; pointer-events: auto; }
+.wall-card:hover .wall-poster,
+.wall-card:focus-within .wall-poster {
+  outline: 1px solid rgba(255, 255, 255, .2);
+  box-shadow: 0 22px 44px -18px rgba(0, 0, 0, .95);
+}
+/* Quando una locandina è sotto il mouse, le altre si tirano indietro */
+.wall:hover .wall-card:not(:hover) { opacity: .42; }
+.wall .wall-card { transition: transform 260ms var(--ease), opacity 200ms var(--ease); }
+
+/* Subito dopo il voto: «Salvato», e la via d'uscita per quattro secondi */
+.wall-saved {
+  position: absolute;
+  left: 7px; right: 7px; bottom: 7px;
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 12px;
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, .2);
+  background: linear-gradient(158deg, rgba(255, 255, 255, .16), rgba(20, 23, 25, .7));
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  backdrop-filter: blur(28px) saturate(190%);
+  font-size: 10.5px;
+  color: rgba(242, 244, 246, .8);
+  animation: fz-up 260ms var(--ease) both;
+}
+.wall-undo {
+  margin-left: auto;
+  border: 0; padding: 0;
+  background: transparent;
+  font-family: inherit; font-size: 10.5px; font-weight: 500;
+  color: var(--ink-full);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+/* Mentre «Salvato» è a schermo le pastiglie stanno ferme: un bersaglio alla volta. */
+.wall-card.is-fresh .wall-votes { display: none; }
+.wall-card.is-fresh .wall-poster { outline: 1px solid rgba(255, 255, 255, .34); }
+.wall-title { display: block; width: 100%; padding: 0; border: 0; background: transparent; text-align: left; cursor: pointer; margin-top: 9px; font-size: 12px; font-weight: 500; line-height: 1.32; color: var(--inchiostro); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .wall-meta { display: block; margin-top: 3px; font-size: 11px; color: var(--ink-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .wall-empty { margin: 0; padding: 40px 0; font-size: 13px; color: var(--ink-3); }
 
@@ -634,4 +745,113 @@ body[data-big-poster="off"] .hero { width: 760px; max-width: calc(100% - 80px); 
   .lib-head { grid-template-columns: minmax(0, 1fr); gap: 18px; }
   .search { width: 100%; }
   .set-grid { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+}
+
+/* ══════════════════════ 3d LIBRERIA VUOTA ══
+   Il primo schermo dopo l'installazione. Dietro, il muro che verrà: in
+   filigrana, così si capisce cosa comparirà lì senza fingere che ci sia già. */
+
+.vuoto { position: relative; z-index: 4; padding: 10px 0 80px; }
+.vuoto-filigrana {
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  height: 340px;
+  pointer-events: none;
+  opacity: .3;
+  background-image:
+    repeating-linear-gradient(90deg, rgba(242, 244, 246, .05) 0 119px, transparent 119px 137px);
+  mask-image: linear-gradient(#000, transparent 78%);
+  -webkit-mask-image: linear-gradient(#000, transparent 78%);
+}
+.vuoto-testo { position: relative; max-width: 620px; }
+.vuoto-testo h2 {
+  margin: 16px 0 0;
+  font-size: 46px;
+  line-height: 1.04;
+  font-weight: 500;
+  letter-spacing: -.035em;
+  color: var(--ink-full);
+}
+.vuoto-sub { margin: 18px 0 0; max-width: 58ch; font-size: 14px; line-height: 1.62; color: var(--ink-1); text-wrap: pretty; }
+
+.passi { margin: 34px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px; }
+.passi li {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 4px 14px;
+  padding: 16px 0;
+  border-top: 1px solid var(--hairline);
+}
+.passi li:last-child { border-bottom: 1px solid var(--hairline); }
+.passo-n { grid-row: 1 / span 2; font-size: 9px; letter-spacing: .2em; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.passo-t { font-size: 13.5px; font-weight: 500; color: var(--ink-full); }
+.passo-d { font-size: 12.5px; line-height: 1.55; color: var(--ink-2); }
+
+.vuoto-azioni { margin-top: 30px; display: flex; flex-wrap: wrap; align-items: center; gap: 18px; }
+.vuoto-nota { margin: 20px 0 0; font-size: 9px; letter-spacing: .18em; color: var(--ink-4); }
+
+/* ══════════════════════ La scheda del titolo ══
+   Quel che il clic sulla locandina promette. Stesso vetro pesante dell'overlay:
+   è l'unica superficie che galleggia sopra il muro. */
+
+.scheda {
+  position: relative;
+  width: 720px; max-width: 100%;
+  border-radius: 22px;
+  overflow: hidden;
+  animation: fz-up 380ms var(--ease) both;
+}
+.scheda-x { position: absolute; top: 16px; right: 18px; z-index: 2; }
+.scheda-corpo { display: grid; grid-template-columns: 232px minmax(0, 1fr); gap: 26px; padding: 26px; }
+.scheda-poster {
+  position: relative;
+  width: 232px; aspect-ratio: 2 / 3;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: var(--pozzetto);
+}
+.scheda-poster img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.scheda-testo { min-width: 0; }
+.scheda-testo h2 {
+  margin: 12px 0 0;
+  font-size: 34px;
+  line-height: 1.04;
+  font-weight: 500;
+  letter-spacing: -.03em;
+  color: var(--ink-full);
+  text-wrap: balance;
+}
+.scheda-meta { margin: 10px 0 0; font-size: 12.5px; color: var(--ink-2); }
+
+.scheda-voto { margin-top: 24px; }
+.voti { margin-top: 11px; display: flex; flex-wrap: wrap; gap: 6px; }
+.voto {
+  padding: 9px 14px;
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, .16);
+  background: transparent;
+  color: rgba(242, 244, 246, .82);
+  font-family: inherit;
+  font-size: 11.5px;
+  cursor: pointer;
+}
+.voto:hover { border-color: rgba(242, 244, 246, .5); color: var(--ink-full); }
+.voto[aria-pressed="true"] {
+  border-color: transparent;
+  background: linear-gradient(180deg, #ffffff, #e5e9ec);
+  color: var(--fondo);
+  font-weight: 500;
+}
+
+/* I dati che Fosforo ha davvero. Quelli che non ha non compaiono affatto. */
+.scheda-dati { margin: 24px 0 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 9px 18px; }
+.scheda-dati dt { font-family: var(--mono); font-size: 8.5px; letter-spacing: .18em; color: var(--ink-3); text-transform: uppercase; }
+.scheda-dati dd { margin: 0; font-size: 12.5px; color: var(--ink-1); }
+
+.scheda-azioni { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 8px; }
+
+@media (max-width: 760px) {
+  .scheda-corpo { grid-template-columns: minmax(0, 1fr); }
+  .scheda-poster { width: 160px; }
+  .vuoto-testo h2 { font-size: 34px; }
 }

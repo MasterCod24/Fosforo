@@ -41,8 +41,12 @@ try {
   await dash.waitForTimeout(900);
   const primaDi = await dash.locator(".wall-card").count();
   ok("all'installazione la libreria è vuota", primaDi === 0, `${primaDi} titoli`);
-  ok("e spiega come si riempie",
-    (await dash.locator("#wall-empty").textContent()).includes("parte vuota"));
+  ok("e mostra il primo schermo invece di un cartello d'errore",
+    await dash.locator("#vuoto").isVisible() && !(await dash.locator("#wall-empty").isVisible()));
+  ok("coi tre passi nell'ordine in cui succedono",
+    (await dash.locator(".passi li").count()) === 3,
+    (await dash.locator(".passi .passo-t").allTextContents()).join(" · "));
+  ok("e senza filtri da filtrare su niente", !(await dash.locator("#lib-filters").isVisible()));
 
   /* ── 2. Aggiungere un titolo a mano ── */
 
@@ -71,8 +75,8 @@ try {
   const primo = await dash.locator(".wall-card").first().locator(".wall-title").textContent();
   ok("il titolo aggiunto sta in cima", primo.trim() === "Il Conformista", primo.trim());
 
-  const stato = await dash.locator(".wall-card").first().locator(".wall-state .mono").textContent();
-  ok("prende lo stato che hai scelto", stato.trim() === "AMATO", stato.trim());
+  const stato = await dash.locator(".wall-card").first().locator(".wall-badge .mono").textContent();
+  ok("prende lo stato che hai scelto", stato.trim() === "Amato", stato.trim());
 
   ok("il toast dice cos'è successo", await dash.locator("#toast").isVisible());
   await dash.waitForTimeout(2800);
@@ -85,18 +89,80 @@ try {
   await dash.locator("#add-confirm").click();
   await dash.waitForTimeout(700);
   ok("lo stesso titolo non entra due volte", (await dash.locator(".wall-card").count()) === dopo);
+  ok("e riaggiungerlo non cancella il voto che gli hai dato",
+    (await dash.locator(".wall-card").first().locator(".wall-badge .mono").textContent()).trim() === "Amato");
 
-  /* Il clic sulla locandina cambia il voto e lo dice: senza il toast
-     l'unica cosa che si muove è una scritta di 8px, e sembra rotto. */
-  const votoPrima = (await dash.locator(".wall-card").first().locator(".wall-state .mono").textContent()).trim();
-  await dash.locator(".wall-card").first().click();
+  /* ── 3a: due bersagli distinti, nessun ciclo ── */
+  const card = dash.locator(".wall-card").first();
+
+  /* A riposo le pastiglie non ci sono: il muro resta pulito. */
+  const opacita = (sel) => card.locator(sel).evaluate((el) => getComputedStyle(el).opacity);
+  ok("a riposo il voto non è a schermo", (await opacita(".wall-votes")) === "0");
+  ok("e nemmeno l'invito ad aprire", (await opacita(".wall-open")) === "0");
+
+  await card.hover();
+  await dash.waitForTimeout(400);
+  ok("al passaggio salgono le quattro posizioni",
+    (await card.locator(".wall-vote").count()) === 4,
+    (await card.locator(".wall-vote").allTextContents()).join(", "));
+  ok("e compare il bersaglio per aprire", await card.locator(".wall-open").isVisible());
+  ok("la posizione attuale è quella premuta",
+    (await card.locator('.wall-vote[aria-pressed="true"]').textContent()).trim() === "Amato");
+
+  /* Si vota per nome: niente giro della ruota. */
+  await card.locator('.wall-vote[data-voto="NELLA MEDIA"]').click();
+  await dash.waitForTimeout(700);
+  const suDisco = await sw.evaluate(async () => {
+    const got = await chrome.storage.local.get("fosforo");
+    return got.fosforo.library[0].state;
+  });
+  ok("la pastiglia scrive proprio quel voto", suDisco === "NELLA MEDIA", suDisco);
+
+  const cardDopo = dash.locator(".wall-card").first();
+  ok("«Salvato» e la via d'uscita compaiono", await cardDopo.locator(".wall-saved").isVisible());
+
+  /* «Annulla» riporta al voto di prima, non al successivo di una lista. */
+  await cardDopo.locator(".wall-undo").click();
+  await dash.waitForTimeout(700);
+  const tornato = await sw.evaluate(async () => {
+    const got = await chrome.storage.local.get("fosforo");
+    return got.fosforo.library[0].state;
+  });
+  ok("«Annulla» rimette il voto di prima", tornato === "AMATO", tornato);
+
+  /* Il bersaglio per aprire è la banda in alto: a 119px di colonna il pannello
+     del voto copre il centro dell'immagine, quindi «tutta la locandina» non è
+     geometricamente disponibile. */
+  await dash.locator(".wall-card").first().hover();
+  await dash.locator(".wall-card").first().locator(".wall-open").click();
   await dash.waitForTimeout(600);
-  const votoDopo = (await dash.locator(".wall-card").first().locator(".wall-state .mono").textContent()).trim();
-  ok("il clic sulla locandina cambia il voto", votoPrima !== votoDopo, `${votoPrima} → ${votoDopo}`);
-  ok("e il toast dice che è successo qualcosa",
-    (await dash.locator("#toast").isVisible()) &&
-    (await dash.locator("#toast-text").textContent()).toLowerCase().includes(votoDopo.toLowerCase()));
-  await dash.waitForTimeout(2800);
+  ok("la locandina apre la scheda del titolo", await dash.locator("#scheda-scrim").isVisible());
+  ok("che mostra il titolo giusto",
+    (await dash.locator("#scheda-titolo").textContent()).trim() === "Il Conformista");
+
+  const campi = await dash.locator("#scheda-dati dt").allTextContents();
+  ok("e i dati che Fosforo ha davvero", campi.length >= 2, campi.join(", "));
+  ok("nessun campo vuoto col trattino",
+    !(await dash.locator("#scheda-dati dd").allTextContents()).some((v) => !v.trim() || v.trim() === "—"));
+
+  /* Si vota anche da qui, e il muro dietro si aggiorna. */
+  await dash.locator('#scheda-voti .voto[data-voto="PIACIUTO"]').click();
+  await dash.waitForTimeout(600);
+  ok("dalla scheda si vota", (await dash.locator('#scheda-voti .voto[aria-pressed="true"]').textContent()).trim() === "Piaciuto");
+
+  await dash.keyboard.press("Escape");
+  await dash.waitForTimeout(400);
+  ok("Esc chiude la scheda", !(await dash.locator("#scheda-scrim").isVisible()));
+  /* E anche il titolo sotto la locandina apre: due bersagli, nessuna caccia. */
+  await dash.locator(".wall-card").first().locator(".wall-title").click();
+  await dash.waitForTimeout(500);
+  ok("anche il titolo sotto apre la scheda", await dash.locator("#scheda-scrim").isVisible());
+  await dash.keyboard.press("Escape");
+  await dash.waitForTimeout(300);
+
+  ok("e il muro dietro è aggiornato",
+    (await dash.locator(".wall-card").first().locator(".wall-badge .mono").textContent()).trim() === "Piaciuto");
+  await dash.waitForTimeout(2600);
 
   /* ── I tre bottoni di Stasera, che erano solo disegnati ── */
 

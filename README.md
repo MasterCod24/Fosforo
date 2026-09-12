@@ -6,7 +6,7 @@ Estensione che ricorda cosa guardi e ti dice cosa guardare stasera.
 
 ## ⬇︎ Scarica e installa
 
-**[Scarica fosforo-2.6.0.zip](https://github.com/MasterCod24/Fosforo/releases/latest/download/fosforo-2.6.0.zip)** — 211 KB, è l'unico file che ti serve.
+**[Scarica fosforo-2.6.0.zip](https://github.com/MasterCod24/Fosforo/releases/latest/download/fosforo-2.6.0.zip)** — 215 KB, è l'unico file che ti serve.
 
 ### Chrome, Edge, Arc, Brave
 
@@ -61,10 +61,23 @@ zero cromature e zero ciano. Gli artboard da cui nasce sono in [`design/`](desig
 **Stasera** — un titolo alla volta, la locandina a tutta altezza, l'affinità che sale
 da zero. Le altre cinque proposte sono il nastro in basso; «Rigenera» le rifà.
 
-**Libreria** — il muro di locandine. Un clic su una locandina cambia il voto; la
-ricerca cerca per titolo, regista e anno. I titoli aggiunti a mano cercano la loro
-locandina come tutti gli altri. **＋ Aggiungi un titolo** serve quando
-Fosforo non ha visto passare un film: basta il titolo, anno e tipo si correggono dopo.
+**Libreria** — il muro di locandine. A riposo è pulito: il segno in alto c'è solo sui
+titoli che hai già votato, perché «da votare» non è un'informazione. Al passaggio del
+mouse sale una lastra di vetro con le **quattro posizioni scritte per esteso** — si
+vota per nome, niente giri di una ruota che nessuno conosce — e in alto compare «Apri
+la scheda». Dopo il voto resta «Annulla» per quattro secondi. La ricerca cerca per
+titolo, regista e anno; **＋ Aggiungi un titolo** serve quando Fosforo non ha visto
+passare un film, e cerca la locandina come per tutti gli altri.
+
+**La scheda del titolo** — si apre dalla banda «Apri la scheda» o dal titolo sotto la
+locandina. Mostra solo dati che Fosforo ha davvero: titolo, anno, regista, se è una
+serie, il voto, il sito dov'è stato riconosciuto, da quando è in libreria, quando l'hai
+votato. Una riga senza valore non compare affatto. Niente trama e niente cast: non li
+abbiamo e non li inventiamo.
+
+**Alla prima apertura** la Libreria non è un cartello «nessun risultato»: è una pagina
+che dice come si riempie, nei tre passi in cui succede davvero, con il muro che verrà
+in filigrana dietro.
 
 **Impostazioni** — quattro schede, raggruppate per conseguenza e non per categoria:
 
@@ -149,19 +162,22 @@ Provato davvero, offline, in Chromium con l'estensione caricata:
   pagina video, monta l'overlay, «È giusto» mette il titolo in libreria **con la
   locandina presa dalla pagina**, i conteggi si aggiornano, e tutto è ancora lì dopo
   un riavvio del browser.
-- **La dashboard** (`npm run e2e:dash`, 34 passi) — la libreria parte vuota e dice
+- **La dashboard** (`npm run e2e:dash`, 51 passi) — la libreria parte vuota e dice
   come si riempie, aggiungere un titolo a mano lo fa
   comparire in cima alla libreria con lo stato scelto, lo stesso titolo due volte non
   fa due righe, il toast se ne va da solo, le quattro schede mostrano una cosa alla
   volta, un sito zittito **finisce davvero in `chrome.storage.local`**, la modalità
   ospite accende il flag che il service worker legge, la densità cambia la colonna del
-  muro, le animazioni spente non lasciano nessuna animazione attiva. E su Stasera:
+  muro, le animazioni spente non lasciano nessuna animazione attiva. Sul muro: a riposo
+  il voto non è a schermo, al passaggio salgono le quattro posizioni con quella attuale
+  premuta, la pastiglia scrive **proprio quel voto** su disco, «Annulla» rimette quello
+  di prima, e la scheda si apre da due bersagli distinti. E su Stasera:
   i tre bottoni fanno quello che dicono — «Salva per stasera» mette in lista, «Non
   mi interessa» scarta e non ripropone nemmeno dopo un ricarico — e restano
   cliccabili anche con un «perché» lungo il triplo del normale. Zero errori
   JavaScript in tutta la sessione.
 
-Tutti e 45 i passi sono stati rifatti **sulla cartella scompattata dallo zip** qui
+Tutti e 62 i passi sono stati rifatti **sulla cartella scompattata dallo zip** qui
 sopra, non sui sorgenti: quel che scarichi è esattamente quel che è stato provato. La
 chiamata a Claude è verificata nella forma — modello, schema della risposta,
 intestazioni, compresa `anthropic-dangerous-direct-browser-access` — con la rete finta
